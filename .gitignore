@@ -24,6 +24,4 @@ dist/
 nbdist/
 .nb-gradle/
 
-## JOOQ Generated Files ##
-/src/generated/
 /out/
