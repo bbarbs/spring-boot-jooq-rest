@@ -6,6 +6,10 @@ import com.jooq.feature.model.PassportDto;
 
 import java.util.List;
 
+/**
+ * Customer context wrapper.
+ */
+
 public class CustomerContext {
 
     private CustomerDto customer;

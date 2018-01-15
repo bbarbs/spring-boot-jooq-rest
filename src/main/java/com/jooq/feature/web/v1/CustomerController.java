@@ -1,11 +1,11 @@
 package com.jooq.feature.web.v1;
 
 import com.jooq.core.rest.ApiResponse;
+import com.jooq.core.rest.patch.Patch;
 import com.jooq.core.util.RestUtil;
-import com.jooq.feature.model.AddressDto;
+import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.wrapper.CustomerContext;
 import com.jooq.feature.service.CustomerService;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
@@ -63,7 +63,7 @@ public class CustomerController {
     }
 
     /**
-     * Get cutomer by id.
+     * Get customer by id.
      *
      * @param customerId
      * @return
@@ -77,5 +77,26 @@ public class CustomerController {
     )
     public CustomerContext getCustomerById(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
         return this.customerService.getCustomerById(customerId);
+    }
+
+    /**
+     * Patch customer info.
+     *
+     * @param customerId
+     * @param patch
+     * @return
+     */
+    @ApiOperation(
+            value = "Patch customer info"
+    )
+    @PatchMapping(
+            value = "/customers/{customerId}",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE
+    )
+    public ApiResponse patchCustomerInfo(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
+                                         @ApiParam(value = "Patch info", required = true) @RequestBody Patch patch) {
+        CustomerDto dto = this.customerService.patchCustomerInfo(customerId, patch);
+        return this.restUtil.createApiResponse(HttpStatus.CREATED.value(), HttpStatus.CREATED, Arrays.asList(dto));
     }
 }

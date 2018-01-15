@@ -1,5 +1,6 @@
 package com.jooq.feature.repository.impl;
 
+import com.jooq.feature.model.enums.OrderStatusEnum;
 import com.jooq.feature.repository.OrderRepository;
 import com.jooq.my_schema.tables.Orders;
 import com.jooq.my_schema.tables.records.OrdersRecord;
@@ -56,5 +57,20 @@ public class OrderRepositoryImpl implements OrderRepository {
         this.dslContext.delete(Orders.ORDERS)
                 .where(Orders.ORDERS.ID.eq(Math.toIntExact(id)))
                 .execute();
+    }
+
+    @Override
+    public List<OrdersRecord> getOrdersByCustomerId(Long customerId) {
+        return this.dslContext.selectFrom(Orders.ORDERS)
+                .where(Orders.ORDERS.FK_CUST_ID.eq(Math.toIntExact(customerId)))
+                .fetch();
+    }
+
+    @Override
+    public List<OrdersRecord> getCustomerOrderByStatus(Long customerId, OrderStatusEnum status) {
+        return this.dslContext.selectFrom(Orders.ORDERS)
+                .where(Orders.ORDERS.FK_CUST_ID.eq(Math.toIntExact(customerId)))
+                .and(Orders.ORDERS.STATUS.eq(String.valueOf(status)))
+                .fetch();
     }
 }

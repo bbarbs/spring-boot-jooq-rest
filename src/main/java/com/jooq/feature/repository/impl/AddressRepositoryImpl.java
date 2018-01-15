@@ -58,16 +58,16 @@ public class AddressRepositoryImpl implements AddressRepository {
     }
 
     @Override
-    public List<AddressRecord> getAddressByCustomerId(Long id) {
+    public List<AddressRecord> getAddressByCustomerId(Long customerId) {
         return this.dslContext.selectFrom(Address.ADDRESS)
-                .where(Address.ADDRESS.FK_CUST_ID.eq(Math.toIntExact(id)))
+                .where(Address.ADDRESS.FK_CUST_ID.eq(Math.toIntExact(customerId)))
                 .fetch();
     }
 
     @Override
-    public List<AddressRecord> getAddressByCustIdAndAddressType(Long id, AddressEnum type) {
+    public List<AddressRecord> getAddressByCustIdAndAddressType(Long customerId, AddressEnum type) {
         return this.dslContext.selectFrom(Address.ADDRESS)
-                .where(Address.ADDRESS.FK_CUST_ID.eq(Math.toIntExact(id)))
+                .where(Address.ADDRESS.FK_CUST_ID.eq(Math.toIntExact(customerId)))
                 .and(Address.ADDRESS.TYPE.eq(type.toString()))
                 .fetch();
     }

@@ -1,7 +1,9 @@
 package com.jooq.feature.service;
 
+import com.jooq.core.rest.patch.Patch;
 import com.jooq.feature.model.AddressDto;
 import com.jooq.feature.model.CustomerDto;
+import com.jooq.feature.model.PassportDto;
 import com.jooq.feature.model.enums.AddressEnum;
 import com.jooq.feature.model.wrapper.CustomerContext;
 import com.jooq.my_schema.tables.pojos.Address;
@@ -24,4 +26,10 @@ public interface CustomerService {
     List<AddressDto> getAddressByCustomerId(Long id);
 
     List<AddressDto> getAddressByCustIdAndAddressType(Long id, AddressEnum type);
+
+    PassportDto getPassportByCustomerId(Long id);
+
+    CustomerDto patchCustomerInfo(Long id, Patch patch);
+
+    PassportDto updateCustomerPassport(Long id, PassportDto dto);
 }

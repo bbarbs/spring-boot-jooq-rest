@@ -21,7 +21,11 @@ public class StringToEnumConverterFactory implements ConverterFactory<String, En
 
         @Override
         public T convert(String source) {
-            return (T) Enum.valueOf(this.enumType, source.trim());
+            try {
+                return (T) Enum.valueOf(this.enumType, source.trim());
+            } catch (Exception e) {
+                return null;
+            }
         }
     }
 

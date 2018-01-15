@@ -53,4 +53,11 @@ public class PassportRepositoryImpl implements PassportRepository {
                 .where(Passport.PASSPORT.ID.eq(Math.toIntExact(id)))
                 .execute();
     }
+
+    @Override
+    public PassportRecord getPassportByCustomerId(Long customerId) {
+        return this.dslContext.selectFrom(Passport.PASSPORT)
+                .where(Passport.PASSPORT.FK_CUST_ID.eq(Math.toIntExact(customerId)))
+                .fetchOne();
+    }
 }

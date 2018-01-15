@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AddressRepository extends IGenericDao<AddressRecord> {
 
-    List<AddressRecord> getAddressByCustomerId(Long id);
+    List<AddressRecord> getAddressByCustomerId(Long customerId);
 
-    List<AddressRecord> getAddressByCustIdAndAddressType(Long id, AddressEnum type);
+    List<AddressRecord> getAddressByCustIdAndAddressType(Long customerId, AddressEnum type);
 }

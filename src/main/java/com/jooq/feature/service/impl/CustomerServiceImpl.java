@@ -1,7 +1,11 @@
 package com.jooq.feature.service.impl;
 
+import com.jooq.core.exception.global.PatchOperationNotSupported;
+import com.jooq.core.rest.patch.Patch;
+import com.jooq.core.rest.patch.PatchEnum;
 import com.jooq.feature.exception.AddressNotFoundException;
 import com.jooq.feature.exception.CustomerNotFoundException;
+import com.jooq.feature.exception.PassportNotFoundException;
 import com.jooq.feature.model.AddressDto;
 import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.PassportDto;
@@ -12,9 +16,11 @@ import com.jooq.feature.repository.CustomerRepository;
 import com.jooq.feature.repository.PassportRepository;
 import com.jooq.feature.service.CustomerService;
 import com.jooq.my_schema.Keys;
+import com.jooq.my_schema.tables.Customer;
 import com.jooq.my_schema.tables.records.AddressRecord;
 import com.jooq.my_schema.tables.records.CustomerRecord;
 import com.jooq.my_schema.tables.records.PassportRecord;
+import org.jooq.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,5 +148,46 @@ public class CustomerServiceImpl implements CustomerService {
         return dtos;
     }
 
+    @Override
+    public PassportDto getPassportByCustomerId(Long id) throws PassportNotFoundException {
+        PassportDto dto = this.passportRepository.getPassportByCustomerId(id).map(record -> new PassportDto().map((PassportRecord) record));
+        if(dto == null) {
+            throw new PassportNotFoundException("Passport not found");
+        }
+        return dto;
+    }
 
+    @Override
+    public CustomerDto patchCustomerInfo(Long id, Patch patch) throws PatchOperationNotSupported,
+            CustomerNotFoundException {
+        if(!patch.getPatchEnum().equals(PatchEnum.REPLACE)) {
+            throw new PatchOperationNotSupported("Patch operation not supported");
+        }
+        CustomerRecord customerRecord = this.customerRepository.findOne(id);
+        if(customerRecord == null) {
+            throw new CustomerNotFoundException("Customer not found");
+        }
+        if(patch.getField().equals(Customer.CUSTOMER.FIRSTNAME)) {
+            customerRecord.setFirstname(patch.getValue());
+        }
+        else if(patch.getField().equals(Customer.CUSTOMER.LASTNAME)) {
+            customerRecord.setLastname(patch.getValue());
+        }
+        return this.customerRepository.update(id, customerRecord).map(record -> new CustomerDto().map((CustomerRecord) record));
+    }
+
+    @Override
+    public PassportDto updateCustomerPassport(Long id, PassportDto dto) throws CustomerNotFoundException,
+            PassportNotFoundException {
+        CustomerRecord customerRecord = this.customerRepository.findOne(id);
+        if(customerRecord == null) {
+            throw new CustomerNotFoundException("Customer not found");
+        }
+        PassportRecord passportRecord = this.passportRepository.getPassportByCustomerId(id);
+        if(passportRecord == null) {
+            throw new PassportNotFoundException("Passport not found");
+        }
+        passportRecord.setPassportNumber(dto.getPassportNumber());
+        return this.passportRepository.update(id, passportRecord).map(record -> new PassportDto().map((PassportRecord) record));
+    }
 }
