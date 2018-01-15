@@ -1,1 +1,69 @@
-# spring-boot-rest-jooq
+# Spring Boot and JOOQ Implementation
+
+> For more information about JOOQ see: http://www.jooq.org/
+
+## Getting Started
+jOOQ generates Java code from your database and lets you build type safe SQL queries through its fluent API.
+
+## Prepopulate Schema 
+* For new checkout in order to prepopulate the schema in the database which by default it use H2. You can run the [SchemaGenerator.class](https://github.com/bbarbs/spring-boot-rest-jooq/blob/master/src/main/java/com/jooq/setup/SchemaGenerator.java) as standalone.
+> Note: Inorder to run this like in Intellij(remove in the configuration to build the project before ii run).
+
+## Configuration
+* Inorder to generate the Java code from your database we need a code generator. For gradle you can see here: https://www.jooq.org/doc/3.7/manual/code-generation/codegen-gradle/
+```
+Sample code generator for Gradle.
+
+task jooqGenerator {
+	def writer = new StringWriter()
+	def xml = new groovy.xml.MarkupBuilder(writer)
+			.configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.10.0.xsd') {
+		jdbc() {
+			driver('org.h2.Driver')
+			url('jdbc:h2:~/test')
+			user('test')
+			password('test')
+		}
+		// See: https://www.jooq.org/doc/3.6/manual/code-generation/codegen-advanced/
+		generator() {
+			database() {
+			}
+
+			generate([:]) {
+				pojos true
+				daos true
+				interfaces true
+			}
+			target() {
+				packageName('com.jooq')
+				directory('src/generated/java')
+			}
+		}
+	}
+
+	org.jooq.util.GenerationTool.generate(
+			javax.xml.bind.JAXB.unmarshal(new StringReader(writer.toString()), org.jooq.util.jaxb.Configuration.class)
+	)
+}
+```
+* You can add also other gradle task to treat the generated folder as source.
+```
+sourceSets {
+	main {
+		java {
+			srcDirs "src/main/java", "src/generated/java"
+		}
+	}
+}
+```
+* You can add task also to delete the generated java code.
+```
+apply plugin: 'base'
+
+clean.doFirst {
+	delete("src/generated/java")
+}
+```
+## Api Documentation
+* We are using Swagger2.
+* To avoid issues mentioned here: https://stackoverflow.com/questions/44346443/swagger-ui-bad-request-url-generation use the right swagger-ui library.
