@@ -190,4 +190,13 @@ public class CustomerServiceImpl implements CustomerService {
         passportRecord.setPassportNumber(dto.getPassportNumber());
         return this.passportRepository.update(id, passportRecord).map(record -> new PassportDto().map((PassportRecord) record));
     }
+
+    @Override
+    public void removeCustomerById(Long id) throws CustomerNotFoundException {
+        CustomerRecord record = this.customerRepository.findOne(id);
+        if(record == null) {
+            throw new CustomerNotFoundException("Customer not found");
+        }
+        this.customerRepository.deleteById(id);
+    }
 }

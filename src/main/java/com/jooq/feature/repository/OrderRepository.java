@@ -11,4 +11,6 @@ public interface OrderRepository extends IGenericDao<OrdersRecord> {
     List<OrdersRecord> getOrdersByCustomerId(Long customerId);
 
     List<OrdersRecord> getCustomerOrderByStatus(Long customerId, OrderStatusEnum status);
+
+    List<OrdersRecord> getOrdersByStatus(OrderStatusEnum status);
 }

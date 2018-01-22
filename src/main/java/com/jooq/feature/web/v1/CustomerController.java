@@ -9,6 +9,7 @@ import com.jooq.feature.service.CustomerService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -98,5 +99,23 @@ public class CustomerController {
                                          @ApiParam(value = "Patch info", required = true) @RequestBody Patch patch) {
         CustomerDto dto = this.customerService.patchCustomerInfo(customerId, patch);
         return this.restUtil.createApiResponse(HttpStatus.CREATED.value(), HttpStatus.CREATED, Arrays.asList(dto));
+    }
+
+    /**
+     * Delete customer.
+     *
+     * @param customerId
+     * @return
+     */
+    @ApiOperation(
+            value = "Delete customer by Id"
+    )
+    @DeleteMapping(
+            value = "/customers/{customerId}",
+            produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> deleteCustomerById(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
+        this.customerService.removeCustomerById(customerId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

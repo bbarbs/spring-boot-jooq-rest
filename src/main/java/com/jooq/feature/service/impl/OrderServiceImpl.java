@@ -109,6 +109,23 @@ public class OrderServiceImpl implements OrderService {
         return contexts;
     }
 
+    @Override
+    public List<OrderContext> getOrdersByStatus(OrderStatusEnum status) {
+        List<OrdersRecord> ordersRecords = this.orderRepository.getOrdersByStatus(status);
+        List<OrderContext> contexts = new ArrayList<>();
+        mapOrderRecordToContextList(ordersRecords, contexts);
+        return contexts;
+    }
+
+    @Override
+    public void removeOrderById(Long id) throws OrderNotFoundException {
+        OrdersRecord record = this.orderRepository.findOne(id);
+        if(record == null) {
+            throw new OrderNotFoundException("Order not found");
+        }
+        this.orderRepository.deleteById(id);
+    }
+
     /**
      * Add order and item to list.
      *

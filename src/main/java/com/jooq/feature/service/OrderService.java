@@ -17,4 +17,8 @@ public interface OrderService {
     List<OrderContext> getOrdersByCustomerId(Long customerId);
 
     List<OrderContext> getCustomerOrderByStatus(Long customerId, OrderStatusEnum status);
+
+    List<OrderContext> getOrdersByStatus(OrderStatusEnum status);
+
+    void removeOrderById(Long id);
 }

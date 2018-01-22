@@ -61,7 +61,13 @@ clean.doFirst {
 ```
 
 ## How it Works
-* For new checkout in order to prepopulate the schema in the database which by default is using H2. You can run the [SchemaGenerator.class](https://github.com/bbarbs/spring-boot-rest-jooq/blob/master/src/main/java/com/jooq/setup/SchemaGenerator.java) as standalone.
+For new checkout in order to prepopulate the schema in the database which by default is using H2. You can run the [SchemaGenerator.class](https://github.com/bbarbs/spring-boot-rest-jooq/blob/master/src/main/java/com/jooq/setup/SchemaGenerator.java) as standalone.
+<br/>
+Using IDE like Intellij you navigate to Settings > Build,Execution,Deployment > Compilers > Excludes and add the parts of the projects that are unrelated to be excluded from compilation. After that you can run the SchemaGenerator.
+
+* Note: Don't forget to remove related projects on your next build when you successfully generated the schema in the database.
+
+After you generated the schema you can now run the jooq generator as mentioned in Configuration section.
 
 ## Api Documentation
 * Using Swagger2 to expose api documentation of REST service.

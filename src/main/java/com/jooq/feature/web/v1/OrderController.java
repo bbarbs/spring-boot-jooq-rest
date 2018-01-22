@@ -8,6 +8,7 @@ import com.jooq.feature.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.sortBySpecificity;
 
 @RestController
 @RequestMapping(value = "/api/v1")
@@ -110,11 +112,46 @@ public class OrderController {
     @GetMapping(
             value = "/customers/{customerId}/orders",
             params = "status",
-            consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
     public List<OrderContext> getCustomerOrderByStatus(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
                                                        @ApiParam(value = "Order status", required = true) @RequestParam("status") OrderStatusEnum status) {
         return this.orderService.getCustomerOrderByStatus(customerId, status);
+    }
+
+    /**
+     * Get order by status.
+     *
+     * @param status
+     * @return
+     */
+    @ApiOperation(
+            value = "Get order by status"
+    )
+    @GetMapping(
+            value = "/orders",
+            params = "status",
+            produces = APPLICATION_JSON_VALUE
+    )
+    public List<OrderContext> getOrdersByStatus(@ApiParam(value = "Order status", required = true) @RequestParam("status") OrderStatusEnum status) {
+        return this.orderService.getOrdersByStatus(status);
+    }
+
+    /**
+     * Delete order by id.
+     *
+     * @param orderId
+     * @return
+     */
+    @ApiOperation(
+            value = "Delete order by Id"
+    )
+    @DeleteMapping(
+            value = "/orders/{orderId}",
+            produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> removeOrderById(@ApiParam(value = "Order Id", required = true) @PathVariable("orderId") Long orderId) {
+        this.orderService.removeOrderById(orderId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -32,4 +32,6 @@ public interface CustomerService {
     CustomerDto patchCustomerInfo(Long id, Patch patch);
 
     PassportDto updateCustomerPassport(Long id, PassportDto dto);
+
+    void removeCustomerById(Long id);
 }

@@ -12,7 +12,7 @@ public class SchemaGenerator {
 
     public static void main(String[] args) {
         // Path of sql file.
-        String sqlPath = "C:/Users/brainold.b.barbero/IdeaProjects/jooq/src/main/resources/schema.sql";
+        String sqlPath = "C:/Users/brainold.b.barbero/IdeaProjects/spring-boot-jooq-rest/src/main/resources/schema.sql";
         // Set connection.
         ScriptRunner scriptRunner = new ScriptRunner(
                 "org.h2.Driver", "jdbc:h2:~/test", "test", "test",

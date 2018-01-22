@@ -73,4 +73,11 @@ public class OrderRepositoryImpl implements OrderRepository {
                 .and(Orders.ORDERS.STATUS.eq(String.valueOf(status)))
                 .fetch();
     }
+
+    @Override
+    public List<OrdersRecord> getOrdersByStatus(OrderStatusEnum status) {
+        return this.dslContext.selectFrom(Orders.ORDERS)
+                .where(Orders.ORDERS.STATUS.eq(String.valueOf(status)))
+                .fetch();
+    }
 }
