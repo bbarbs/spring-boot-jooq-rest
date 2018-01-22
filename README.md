@@ -1,13 +1,5 @@
-# Spring Boot and JOOQ Implementation
-
-> For more information about JOOQ see: http://www.jooq.org/
-
-## Getting Started
-jOOQ generates Java code from your database and lets you build type safe SQL queries through its fluent API.
-
-## Prepopulate Schema 
-* For new checkout in order to prepopulate the schema in the database which by default it use H2. You can run the [SchemaGenerator.class](https://github.com/bbarbs/spring-boot-rest-jooq/blob/master/src/main/java/com/jooq/setup/SchemaGenerator.java) as standalone.
-> Note: Inorder to run this like in Intellij(remove in the configuration to build the project before ii run).
+# Getting Started
+This a sample spring boot application that use JOOQ(Java Object Oriented Querying) which offer more type safe SQL queries. For more information about JOOQ see: http://www.jooq.org/
 
 ## Configuration
 * Inorder to generate the Java code from your database we need a code generator. For gradle you can see here: https://www.jooq.org/doc/3.7/manual/code-generation/codegen-gradle/
@@ -46,6 +38,9 @@ task jooqGenerator {
 	)
 }
 ```
+
+## Additional Gradle Config
+
 * You can add also other gradle task to treat the generated folder as source.
 ```
 sourceSets {
@@ -64,6 +59,11 @@ clean.doFirst {
 	delete("src/generated/java")
 }
 ```
+
+## How it Works
+* For new checkout in order to prepopulate the schema in the database which by default is using H2. You can run the [SchemaGenerator.class](https://github.com/bbarbs/spring-boot-rest-jooq/blob/master/src/main/java/com/jooq/setup/SchemaGenerator.java) as standalone.
+> Note: Inorder to run this like in Intellij(remove in the configuration to build the project before it run).
+
 ## Api Documentation
-* We are using Swagger2.
+* Using Swagger2 to expose api documentation of REST service.
 * To avoid issues mentioned here: https://stackoverflow.com/questions/44346443/swagger-ui-bad-request-url-generation use the right swagger-ui library.
