@@ -62,7 +62,6 @@ clean.doFirst {
 
 ## How it Works
 * For new checkout in order to prepopulate the schema in the database which by default is using H2. You can run the [SchemaGenerator.class](https://github.com/bbarbs/spring-boot-rest-jooq/blob/master/src/main/java/com/jooq/setup/SchemaGenerator.java) as standalone.
-> Note: Inorder to run this like in Intellij(remove in the configuration to build the project before it run).
 
 ## Api Documentation
 * Using Swagger2 to expose api documentation of REST service.
