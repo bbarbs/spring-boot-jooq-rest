@@ -44,19 +44,20 @@ public class PassportController {
     /**
      * Update customer passport.
      *
-     * @param customerId
+     * @param passportId
+     * @param passportDto
      * @return
      */
     @ApiOperation(
             value = "Update customer passport"
     )
     @PutMapping(
-            value = "/customers/{customerId}/passport",
+            value = "/passports/{passportId}",
             produces = APPLICATION_JSON_VALUE
     )
-    public ApiResponse updateCustomerPassport(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
+    public ApiResponse updateCustomerPassport(@ApiParam(value = "Passport Id", required = true) @PathVariable("passportId") Long passportId,
                                               @ApiParam(value = "Passport update", required = true) @RequestBody PassportDto passportDto) {
-        PassportDto dto = this.customerService.updateCustomerPassport(customerId, passportDto);
+        PassportDto dto = this.customerService.updateCustomerPassport(passportId, passportDto);
         return this.restUtil.createApiResponse(HttpStatus.CREATED.value(), HttpStatus.CREATED, Arrays.asList(dto));
     }
 }

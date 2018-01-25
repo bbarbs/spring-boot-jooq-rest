@@ -21,17 +21,17 @@ public interface CustomerService {
 
     CustomerContext addCustomer(CustomerContext context);
 
-    CustomerContext getCustomerById(Long id);
+    CustomerContext getCustomerById(Long customerId);
 
-    List<AddressDto> getAddressByCustomerId(Long id);
+    CustomerDto patchCustomerInfo(Long customerId, Patch patch);
 
-    List<AddressDto> getAddressByCustIdAndAddressType(Long id, AddressEnum type);
+    List<AddressDto> getAddressByCustomerId(Long customerId);
 
-    PassportDto getPassportByCustomerId(Long id);
+    List<AddressDto> getAddressByCustIdAndAddressType(Long customerId, AddressEnum type);
 
-    CustomerDto patchCustomerInfo(Long id, Patch patch);
+    PassportDto getPassportByCustomerId(Long customerId);
 
-    PassportDto updateCustomerPassport(Long id, PassportDto dto);
+    PassportDto updateCustomerPassport(Long passportId, PassportDto dto);
 
-    void removeCustomerById(Long id);
+    void removeCustomerById(Long customerId);
 }

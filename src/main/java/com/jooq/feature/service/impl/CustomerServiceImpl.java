@@ -107,10 +107,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerContext getCustomerById(Long id) throws CustomerNotFoundException {
+    public CustomerContext getCustomerById(Long customerId) throws CustomerNotFoundException {
         CustomerContext context = new CustomerContext();
         // Get customer.
-        CustomerRecord customerRecord = this.customerRepository.findOne(id);
+        CustomerRecord customerRecord = this.customerRepository.findOne(customerId);
         if(customerRecord == null) {
             throw new CustomerNotFoundException("Customer id not found");
         }
@@ -127,43 +127,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<AddressDto> getAddressByCustomerId(Long id) throws AddressNotFoundException {
-        List<AddressRecord> records = this.addressRepository.getAddressByCustomerId(id);
-        if(records.size() == 0 || records.isEmpty()) {
-            throw new AddressNotFoundException("Customer address not found");
-        }
-        List<AddressDto> dtos = new ArrayList<>();
-        records.stream().forEach(addressRecord -> dtos.add(new AddressDto().map(addressRecord)));
-        return dtos;
-    }
-
-    @Override
-    public List<AddressDto> getAddressByCustIdAndAddressType(Long id, AddressEnum type) throws AddressNotFoundException {
-        List<AddressRecord> records = this.addressRepository.getAddressByCustIdAndAddressType(id, type);
-        if(records.size() == 0 || records.isEmpty()) {
-            throw new AddressNotFoundException("Customer address not found");
-        }
-        List<AddressDto> dtos = new ArrayList<>();
-        records.stream().forEach(addressRecord -> dtos.add(new AddressDto().map(addressRecord)));
-        return dtos;
-    }
-
-    @Override
-    public PassportDto getPassportByCustomerId(Long id) throws PassportNotFoundException {
-        PassportDto dto = this.passportRepository.getPassportByCustomerId(id).map(record -> new PassportDto().map((PassportRecord) record));
-        if(dto == null) {
-            throw new PassportNotFoundException("Passport not found");
-        }
-        return dto;
-    }
-
-    @Override
-    public CustomerDto patchCustomerInfo(Long id, Patch patch) throws PatchOperationNotSupported,
+    public CustomerDto patchCustomerInfo(Long customerId, Patch patch) throws PatchOperationNotSupported,
             CustomerNotFoundException {
         if(!patch.getPatchEnum().equals(PatchEnum.REPLACE)) {
             throw new PatchOperationNotSupported("Patch operation not supported");
         }
-        CustomerRecord customerRecord = this.customerRepository.findOne(id);
+        CustomerRecord customerRecord = this.customerRepository.findOne(customerId);
         if(customerRecord == null) {
             throw new CustomerNotFoundException("Customer not found");
         }
@@ -173,30 +142,57 @@ public class CustomerServiceImpl implements CustomerService {
         else if(patch.getField().equals(Customer.CUSTOMER.LASTNAME)) {
             customerRecord.setLastname(patch.getValue());
         }
-        return this.customerRepository.update(id, customerRecord).map(record -> new CustomerDto().map((CustomerRecord) record));
+        return this.customerRepository.update(customerId, customerRecord).map(record -> new CustomerDto().map((CustomerRecord) record));
     }
 
     @Override
-    public PassportDto updateCustomerPassport(Long id, PassportDto dto) throws CustomerNotFoundException,
-            PassportNotFoundException {
-        CustomerRecord customerRecord = this.customerRepository.findOne(id);
-        if(customerRecord == null) {
-            throw new CustomerNotFoundException("Customer not found");
+    public List<AddressDto> getAddressByCustomerId(Long customerId) throws AddressNotFoundException {
+        List<AddressRecord> records = this.addressRepository.getAddressByCustomerId(customerId);
+        if(records.size() == 0 || records.isEmpty()) {
+            throw new AddressNotFoundException("Customer address not found");
         }
-        PassportRecord passportRecord = this.passportRepository.getPassportByCustomerId(id);
+        List<AddressDto> dtos = new ArrayList<>();
+        records.stream().forEach(addressRecord -> dtos.add(new AddressDto().map(addressRecord)));
+        return dtos;
+    }
+
+    @Override
+    public List<AddressDto> getAddressByCustIdAndAddressType(Long customerId, AddressEnum type) throws AddressNotFoundException {
+        List<AddressRecord> records = this.addressRepository.getAddressByCustIdAndAddressType(customerId, type);
+        if(records.size() == 0 || records.isEmpty()) {
+            throw new AddressNotFoundException("Customer address not found");
+        }
+        List<AddressDto> dtos = new ArrayList<>();
+        records.stream().forEach(addressRecord -> dtos.add(new AddressDto().map(addressRecord)));
+        return dtos;
+    }
+
+    @Override
+    public PassportDto getPassportByCustomerId(Long customerId) throws PassportNotFoundException {
+        PassportDto dto = this.passportRepository.getPassportByCustomerId(customerId).map(record -> new PassportDto().map((PassportRecord) record));
+        if(dto == null) {
+            throw new PassportNotFoundException("Passport not found");
+        }
+        return dto;
+    }
+
+    @Override
+    public PassportDto updateCustomerPassport(Long passportId, PassportDto dto) throws CustomerNotFoundException,
+            PassportNotFoundException {
+        PassportRecord passportRecord = this.passportRepository.findOne(passportId);
         if(passportRecord == null) {
             throw new PassportNotFoundException("Passport not found");
         }
         passportRecord.setPassportNumber(dto.getPassportNumber());
-        return this.passportRepository.update(id, passportRecord).map(record -> new PassportDto().map((PassportRecord) record));
+        return this.passportRepository.update(passportId, passportRecord).map(record -> new PassportDto().map((PassportRecord) record));
     }
 
     @Override
-    public void removeCustomerById(Long id) throws CustomerNotFoundException {
-        CustomerRecord record = this.customerRepository.findOne(id);
+    public void removeCustomerById(Long customerId) throws CustomerNotFoundException {
+        CustomerRecord record = this.customerRepository.findOne(customerId);
         if(record == null) {
             throw new CustomerNotFoundException("Customer not found");
         }
-        this.customerRepository.deleteById(id);
+        this.customerRepository.deleteById(customerId);
     }
 }
