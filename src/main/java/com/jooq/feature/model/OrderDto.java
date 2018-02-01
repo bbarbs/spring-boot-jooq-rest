@@ -3,6 +3,7 @@ package com.jooq.feature.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jooq.feature.model.enums.OrderStatusEnum;
 import com.jooq.my_schema.tables.records.OrdersRecord;
+import io.swagger.annotations.ApiModelProperty;
 import org.jooq.RecordMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -11,57 +12,64 @@ import java.util.Date;
 
 public class OrderDto implements RecordMapper<OrdersRecord, OrderDto> {
 
-    private Integer id;
-    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
-    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
-    private Date dateOrder;
-    private OrderStatusEnum status;
-    private BigDecimal amount;
+    @ApiModelProperty(hidden = true)
+    private Long orderId;
+
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+    @ApiModelProperty(required = true)
+    private Date orderDate;
+
+    @ApiModelProperty(required = true)
+    private OrderStatusEnum orderStatus;
+
+    @ApiModelProperty(required = true)
+    private BigDecimal orderAmount;
 
     public OrderDto() {
     }
 
-    public OrderDto(Integer id, Date dateOrder, OrderStatusEnum status, BigDecimal amount) {
-        this.id = id;
-        this.dateOrder = dateOrder;
-        this.status = status;
-        this.amount = amount;
+    public OrderDto(Long orderId, Date orderDate, OrderStatusEnum orderStatus, BigDecimal orderAmount) {
+        this.orderId = orderId;
+        this.orderDate = orderDate;
+        this.orderStatus = orderStatus;
+        this.orderAmount = orderAmount;
     }
 
-    public Integer getId() {
-        return id;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
-    public Date getDateOrder() {
-        return dateOrder;
+    public Date getOrderDate() {
+        return orderDate;
     }
 
-    public void setDateOrder(Date dateOrder) {
-        this.dateOrder = dateOrder;
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 
-    public OrderStatusEnum getStatus() {
-        return status;
+    public OrderStatusEnum getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setStatus(OrderStatusEnum status) {
-        this.status = status;
+    public void setOrderStatus(OrderStatusEnum orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public BigDecimal getOrderAmount() {
+        return orderAmount;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setOrderAmount(BigDecimal orderAmount) {
+        this.orderAmount = orderAmount;
     }
 
     @Override
     public OrderDto map(OrdersRecord record) {
-        return new OrderDto(record.getId(), record.getDateOrder(), OrderStatusEnum.valueOf(record.getStatus()), record.getAmount());
+        return new OrderDto(Long.valueOf(record.getId()), record.getDateOrder(), OrderStatusEnum.valueOf(record.getStatus()), record.getAmount());
     }
 }

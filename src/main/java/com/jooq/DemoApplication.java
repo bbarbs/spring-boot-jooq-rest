@@ -9,27 +9,26 @@ import org.springframework.core.env.Environment;
 
 import javax.inject.Inject;
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 @SpringBootApplication
 public class DemoApplication implements CommandLineRunner {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Inject
-	Environment environment;
+    @Inject
+    Environment environment;
 
-	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
 
-	@Override
-	public void run(String... args) {
-		try {
-			// Log active profile.
-			Arrays.stream(environment.getActiveProfiles()).forEach(s -> logger.info("Active profile: " + s));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public void run(String... args) {
+        try {
+            // Log active profile.
+            Arrays.stream(environment.getActiveProfiles()).forEach(s -> logger.info("Active profile: " + s));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

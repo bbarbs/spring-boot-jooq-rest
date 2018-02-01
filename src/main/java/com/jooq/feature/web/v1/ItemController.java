@@ -1,7 +1,6 @@
 package com.jooq.feature.web.v1;
 
 import com.jooq.core.rest.ApiResponse;
-import com.jooq.core.util.RestUtil;
 import com.jooq.feature.model.ItemDto;
 import com.jooq.feature.service.ItemService;
 import io.swagger.annotations.ApiOperation;
@@ -24,9 +23,6 @@ public class ItemController {
     @Inject
     ItemService itemService;
 
-    @Inject
-    RestUtil restUtil;
-
     /**
      * Add item.
      *
@@ -41,8 +37,10 @@ public class ItemController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
-    public ApiResponse addItem(@ApiParam(value = "Item details", required = true) @RequestBody ItemDto dto) {
+    public ApiResponse<ItemDto> addItem(@ApiParam(value = "Item details", required = true) @RequestBody ItemDto dto) {
         ItemDto item = this.itemService.addItem(dto);
-        return this.restUtil.createApiResponse(HttpStatus.CREATED.value(), HttpStatus.CREATED, Arrays.asList(item));
+        return new ApiResponse<>(HttpStatus.CREATED.value(),
+                HttpStatus.CREATED,
+                Arrays.asList(item));
     }
 }

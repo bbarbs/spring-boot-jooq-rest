@@ -1,8 +1,10 @@
 package com.jooq.feature.repository.impl;
 
 import com.jooq.feature.repository.ItemOrderRepository;
+import com.jooq.my_schema.tables.Items;
 import com.jooq.my_schema.tables.ItemsOrders;
 import com.jooq.my_schema.tables.records.ItemsOrdersRecord;
+import com.jooq.my_schema.tables.records.ItemsRecord;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
@@ -50,5 +52,25 @@ public class ItemOrderRepositoryImpl implements ItemOrderRepository {
     public void deleteById(Long id) {
         this.dslContext.delete(ItemsOrders.ITEMS_ORDERS)
                 .where(ItemsOrders.ITEMS_ORDERS.ORDER_ID.eq(Math.toIntExact(id)));
+    }
+
+    @Override
+    public List<ItemsOrdersRecord> getItemOrderByOrderId(Long orderId) {
+        return this.dslContext.selectFrom(ItemsOrders.ITEMS_ORDERS)
+                .where(ItemsOrders.ITEMS_ORDERS.ORDER_ID.eq(Math.toIntExact(orderId)))
+                .fetch();
+    }
+
+    @Override
+    public List<ItemsRecord> getItemsByOrderId(Long orderId) {
+        return this.dslContext.select()
+                .from(ItemsOrders.ITEMS_ORDERS)
+                .join(Items.ITEMS)
+                .on(Items.ITEMS.ID.eq(ItemsOrders.ITEMS_ORDERS.ITEM_ID))
+                .where(ItemsOrders.ITEMS_ORDERS.ORDER_ID.eq(Math.toIntExact(orderId)))
+                .fetch().map(record -> new ItemsRecord(record.get(Items.ITEMS.ID),
+                        record.get(Items.ITEMS.CODE),
+                        record.get(Items.ITEMS.ITEM_NAME),
+                        record.get(Items.ITEMS.DESCRIPTION)));
     }
 }

@@ -20,9 +20,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto addItem(ItemDto dto) {
         ItemsRecord record = new ItemsRecord();
-        record.setCode(dto.getCode());
+        record.setCode(dto.getItemCode());
         record.setItemName(dto.getItemName());
-        record.setDescription(dto.getDescription());
+        record.setDescription(dto.getItemDescription());
         return this.itemRepository.save(record).map(res -> new ItemDto().map((ItemsRecord) res));
     }
 }

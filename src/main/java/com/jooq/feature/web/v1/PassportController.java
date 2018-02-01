@@ -1,7 +1,6 @@
 package com.jooq.feature.web.v1;
 
 import com.jooq.core.rest.ApiResponse;
-import com.jooq.core.util.RestUtil;
 import com.jooq.feature.model.PassportDto;
 import com.jooq.feature.service.CustomerService;
 import io.swagger.annotations.ApiOperation;
@@ -20,9 +19,6 @@ public class PassportController {
 
     @Inject
     CustomerService customerService;
-
-    @Inject
-    RestUtil restUtil;
 
     /**
      * Get passport by certain customer.
@@ -55,9 +51,11 @@ public class PassportController {
             value = "/passports/{passportId}",
             produces = APPLICATION_JSON_VALUE
     )
-    public ApiResponse updateCustomerPassport(@ApiParam(value = "Passport Id", required = true) @PathVariable("passportId") Long passportId,
-                                              @ApiParam(value = "Passport update", required = true) @RequestBody PassportDto passportDto) {
+    public ApiResponse<PassportDto> updateCustomerPassport(@ApiParam(value = "Passport Id", required = true) @PathVariable("passportId") Long passportId,
+                                                           @ApiParam(value = "Passport update", required = true) @RequestBody PassportDto passportDto) {
         PassportDto dto = this.customerService.updateCustomerPassport(passportId, passportDto);
-        return this.restUtil.createApiResponse(HttpStatus.CREATED.value(), HttpStatus.CREATED, Arrays.asList(dto));
+        return new ApiResponse<>(HttpStatus.CREATED.value(),
+                HttpStatus.CREATED,
+                Arrays.asList(dto));
     }
 }

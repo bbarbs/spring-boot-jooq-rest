@@ -2,29 +2,35 @@ package com.jooq.feature.model;
 
 import com.jooq.feature.model.enums.AddressEnum;
 import com.jooq.my_schema.tables.records.AddressRecord;
+import io.swagger.annotations.ApiModelProperty;
 import org.jooq.RecordMapper;
 
 public class AddressDto implements RecordMapper<AddressRecord, AddressDto> {
 
-    private int id;
+    @ApiModelProperty(hidden = true)
+    private Long addressId;
+
+    @ApiModelProperty(required = true)
     private String address;
-    private AddressEnum type;
+
+    @ApiModelProperty(required = true)
+    private AddressEnum addressType;
 
     public AddressDto() {
     }
 
-    public AddressDto(int id, String address, AddressEnum type) {
-        this.id = id;
+    public AddressDto(Long addressId, String address, AddressEnum addressType) {
+        this.addressId = addressId;
         this.address = address;
-        this.type = type;
+        this.addressType = addressType;
     }
 
-    public int getId() {
-        return id;
+    public Long getAddressId() {
+        return addressId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setAddressId(Long addressId) {
+        this.addressId = addressId;
     }
 
     public String getAddress() {
@@ -35,16 +41,16 @@ public class AddressDto implements RecordMapper<AddressRecord, AddressDto> {
         this.address = address;
     }
 
-    public AddressEnum getType() {
-        return type;
+    public AddressEnum getAddressType() {
+        return addressType;
     }
 
-    public void setType(AddressEnum type) {
-        this.type = type;
+    public void setAddressType(AddressEnum addressType) {
+        this.addressType = addressType;
     }
 
     @Override
     public AddressDto map(AddressRecord record) {
-        return new AddressDto(record.getId(), record.getAddress(), AddressEnum.valueOf(record.getType()));
+        return new AddressDto(Long.valueOf(record.getId()), record.getAddress(), AddressEnum.valueOf(record.getType()));
     }
 }

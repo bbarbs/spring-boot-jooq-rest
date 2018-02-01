@@ -6,12 +6,6 @@ import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.PassportDto;
 import com.jooq.feature.model.enums.AddressEnum;
 import com.jooq.feature.model.wrapper.CustomerContext;
-import com.jooq.my_schema.tables.pojos.Address;
-import com.jooq.my_schema.tables.pojos.Customer;
-import com.jooq.my_schema.tables.pojos.Passport;
-import com.jooq.my_schema.tables.records.AddressRecord;
-import com.jooq.my_schema.tables.records.CustomerRecord;
-import com.jooq.my_schema.tables.records.PassportRecord;
 
 import java.util.List;
 
@@ -19,17 +13,21 @@ public interface CustomerService {
 
     List<CustomerContext> getAllCustomersInfo();
 
-    CustomerContext addCustomer(CustomerContext context);
+    CustomerDto addCustomer(CustomerDto dto);
 
-    CustomerContext getCustomerById(Long customerId);
+    CustomerDto getCustomerById(Long customerId);
 
     CustomerDto patchCustomerInfo(Long customerId, Patch patch);
+
+    AddressDto addCustomerAddress(Long customerId, AddressDto dto);
 
     List<AddressDto> getAddressByCustomerId(Long customerId);
 
     List<AddressDto> getAddressByCustIdAndAddressType(Long customerId, AddressEnum type);
 
     PassportDto getPassportByCustomerId(Long customerId);
+
+    PassportDto addCustomerPassport(Long customerId, PassportDto dto);
 
     PassportDto updateCustomerPassport(Long passportId, PassportDto dto);
 

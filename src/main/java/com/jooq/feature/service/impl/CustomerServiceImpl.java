@@ -20,7 +20,6 @@ import com.jooq.my_schema.tables.Customer;
 import com.jooq.my_schema.tables.records.AddressRecord;
 import com.jooq.my_schema.tables.records.CustomerRecord;
 import com.jooq.my_schema.tables.records.PassportRecord;
-import org.jooq.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
         // Get list of customers.
         List<CustomerRecord> customerRecords = this.customerRepository.findAll();
         // Get customer additional details.
-        for(CustomerRecord customerRecord : customerRecords) {
+        for (CustomerRecord customerRecord : customerRecords) {
             CustomerContext context = new CustomerContext();
             context.setCustomer(new CustomerDto().map(customerRecord));
             // Get customer passport.
@@ -66,89 +65,53 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerContext addCustomer(CustomerContext context) {
-        CustomerContext customerContext = new CustomerContext();
-        // Set customer details.
+    public CustomerDto addCustomer(CustomerDto dto) {
         CustomerRecord custRecord = new CustomerRecord();
-        custRecord.setFirstname(context.getCustomer().getFirstname());
-        custRecord.setLastname(context.getCustomer().getLastname());
-        // Add to db.
-        CustomerRecord persistCustRecord = this.customerRepository.save(custRecord);
-        // Set address.
-        List<AddressRecord> addressRecordList = new ArrayList<>();
-        for(AddressDto addressDto : context.getAddress()) {
-            AddressRecord addressRecord = new AddressRecord();
-            addressRecord.setAddress(addressDto.getAddress());
-            addressRecord.setType(String.valueOf(addressDto.getType()));
-            addressRecord.setFkCustId(persistCustRecord.getId());
-            AddressRecord persistAddrRecord = this.addressRepository.save(addressRecord);
-            // Add to list and persist to db.
-            addressRecordList.add(persistAddrRecord);
-        }
-        // Set passport.
-        PassportRecord passRecord = new PassportRecord();
-        passRecord.setPassportNumber(context.getPassport().getPassportNumber());
-        passRecord.setFkCustId(persistCustRecord.getId());
-        // Persist.
-        PassportRecord persistPassRecord = this.passportRepository.save(passRecord);
-        // Set customer context.
-        customerContext.setCustomer(new CustomerDto().map(persistCustRecord));
-        customerContext.setPassport(new PassportDto().map(persistPassRecord));
-        List<AddressDto> addressDtos = new ArrayList<>();
-        for(AddressRecord record : addressRecordList) {
-            AddressDto dto = new AddressDto();
-            dto.setId(record.getId());
-            dto.setAddress(record.getAddress());
-            dto.setType(AddressEnum.valueOf(record.getType()));
-            addressDtos.add(dto);
-        }
-        customerContext.setAddress(addressDtos);
-        return customerContext;
+        custRecord.setFirstname(dto.getFirstname());
+        custRecord.setLastname(dto.getLastname());
+        return this.customerRepository.save(custRecord).map(record -> new CustomerDto().map((CustomerRecord) record));
     }
 
     @Override
-    public CustomerContext getCustomerById(Long customerId) throws CustomerNotFoundException {
-        CustomerContext context = new CustomerContext();
-        // Get customer.
+    public CustomerDto getCustomerById(Long customerId) throws CustomerNotFoundException {
         CustomerRecord customerRecord = this.customerRepository.findOne(customerId);
-        if(customerRecord == null) {
+        if (customerRecord == null) {
             throw new CustomerNotFoundException("Customer id not found");
         }
-        context.setCustomer(new CustomerDto().map(customerRecord));
-        // Get passport.
-        List<PassportRecord> passportRecords = Keys.CONSTRAINT_77.fetchChildren(customerRecord);
-        context.setPassport(new PassportDto().map(passportRecords.get(0)));
-        // Get address.
-        List<AddressRecord> addressRecords = Keys.CONSTRAINT_E6.fetchChildren(customerRecord);
-        List<AddressDto> addressDtos = new ArrayList<>();
-        addressRecords.stream().forEach(addressRecord -> addressDtos.addAll(Arrays.asList(new AddressDto().map(addressRecord))));
-        context.setAddress(addressDtos);
-        return context;
+        return customerRecord.map(record -> new CustomerDto().map((CustomerRecord) record));
     }
 
     @Override
     public CustomerDto patchCustomerInfo(Long customerId, Patch patch) throws PatchOperationNotSupported,
             CustomerNotFoundException {
-        if(!patch.getPatchEnum().equals(PatchEnum.REPLACE)) {
+        if (!patch.getPatchEnum().equals(PatchEnum.REPLACE)) {
             throw new PatchOperationNotSupported("Patch operation not supported");
         }
         CustomerRecord customerRecord = this.customerRepository.findOne(customerId);
-        if(customerRecord == null) {
+        if (customerRecord == null) {
             throw new CustomerNotFoundException("Customer not found");
         }
-        if(patch.getField().equals(Customer.CUSTOMER.FIRSTNAME)) {
+        if (patch.getField().equals(Customer.CUSTOMER.FIRSTNAME)) {
             customerRecord.setFirstname(patch.getValue());
-        }
-        else if(patch.getField().equals(Customer.CUSTOMER.LASTNAME)) {
+        } else if (patch.getField().equals(Customer.CUSTOMER.LASTNAME)) {
             customerRecord.setLastname(patch.getValue());
         }
         return this.customerRepository.update(customerId, customerRecord).map(record -> new CustomerDto().map((CustomerRecord) record));
     }
 
     @Override
+    public AddressDto addCustomerAddress(Long customerId, AddressDto dto) {
+        AddressRecord addressRecord = new AddressRecord();
+        addressRecord.setAddress(dto.getAddress());
+        addressRecord.setType(String.valueOf(dto.getAddressType()));
+        addressRecord.setFkCustId(Math.toIntExact(customerId));
+        return this.addressRepository.save(addressRecord).map(record -> new AddressDto().map((AddressRecord) record));
+    }
+
+    @Override
     public List<AddressDto> getAddressByCustomerId(Long customerId) throws AddressNotFoundException {
         List<AddressRecord> records = this.addressRepository.getAddressByCustomerId(customerId);
-        if(records.size() == 0 || records.isEmpty()) {
+        if (records.size() == 0 || records.isEmpty()) {
             throw new AddressNotFoundException("Customer address not found");
         }
         List<AddressDto> dtos = new ArrayList<>();
@@ -159,7 +122,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<AddressDto> getAddressByCustIdAndAddressType(Long customerId, AddressEnum type) throws AddressNotFoundException {
         List<AddressRecord> records = this.addressRepository.getAddressByCustIdAndAddressType(customerId, type);
-        if(records.size() == 0 || records.isEmpty()) {
+        if (records.size() == 0 || records.isEmpty()) {
             throw new AddressNotFoundException("Customer address not found");
         }
         List<AddressDto> dtos = new ArrayList<>();
@@ -170,17 +133,25 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public PassportDto getPassportByCustomerId(Long customerId) throws PassportNotFoundException {
         PassportDto dto = this.passportRepository.getPassportByCustomerId(customerId).map(record -> new PassportDto().map((PassportRecord) record));
-        if(dto == null) {
+        if (dto == null) {
             throw new PassportNotFoundException("Passport not found");
         }
         return dto;
     }
 
     @Override
+    public PassportDto addCustomerPassport(Long customerId, PassportDto dto) {
+        PassportRecord passRecord = new PassportRecord();
+        passRecord.setPassportNumber(dto.getPassportNumber());
+        passRecord.setFkCustId(Math.toIntExact(customerId));
+        return this.passportRepository.save(passRecord).map(record -> new PassportDto().map((PassportRecord) record));
+    }
+
+    @Override
     public PassportDto updateCustomerPassport(Long passportId, PassportDto dto) throws CustomerNotFoundException,
             PassportNotFoundException {
         PassportRecord passportRecord = this.passportRepository.findOne(passportId);
-        if(passportRecord == null) {
+        if (passportRecord == null) {
             throw new PassportNotFoundException("Passport not found");
         }
         passportRecord.setPassportNumber(dto.getPassportNumber());
@@ -190,7 +161,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void removeCustomerById(Long customerId) throws CustomerNotFoundException {
         CustomerRecord record = this.customerRepository.findOne(customerId);
-        if(record == null) {
+        if (record == null) {
             throw new CustomerNotFoundException("Customer not found");
         }
         this.customerRepository.deleteById(customerId);

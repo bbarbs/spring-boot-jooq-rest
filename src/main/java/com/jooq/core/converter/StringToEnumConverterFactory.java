@@ -2,7 +2,6 @@ package com.jooq.core.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
-import org.springframework.stereotype.Component;
 
 /**
  * Converter of string to enum.

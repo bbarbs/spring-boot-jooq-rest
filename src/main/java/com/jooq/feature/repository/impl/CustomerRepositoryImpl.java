@@ -7,7 +7,6 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository

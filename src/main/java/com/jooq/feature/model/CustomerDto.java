@@ -1,30 +1,35 @@
 package com.jooq.feature.model;
 
-import com.jooq.my_schema.tables.daos.CustomerDao;
 import com.jooq.my_schema.tables.records.CustomerRecord;
+import io.swagger.annotations.ApiModelProperty;
 import org.jooq.RecordMapper;
 
 public class CustomerDto implements RecordMapper<CustomerRecord, CustomerDto> {
 
-    private int id;
+    @ApiModelProperty(hidden = true)
+    private Long customerId;
+
+    @ApiModelProperty(required = true)
     private String firstname;
+
+    @ApiModelProperty(required = true)
     private String lastname;
 
     public CustomerDto() {
     }
 
-    public CustomerDto(int id, String firstname, String lastname) {
-        this.id = id;
+    public CustomerDto(Long customerId, String firstname, String lastname) {
+        this.customerId = customerId;
         this.firstname = firstname;
         this.lastname = lastname;
     }
 
-    public int getId() {
-        return id;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public String getFirstname() {
@@ -45,6 +50,6 @@ public class CustomerDto implements RecordMapper<CustomerRecord, CustomerDto> {
 
     @Override
     public CustomerDto map(CustomerRecord record) {
-        return new CustomerDto(record.getId(), record.getFirstname(), record.getLastname());
+        return new CustomerDto(Long.valueOf(record.getId()), record.getFirstname(), record.getLastname());
     }
 }

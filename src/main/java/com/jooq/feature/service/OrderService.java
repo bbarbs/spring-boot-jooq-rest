@@ -1,24 +1,28 @@
 package com.jooq.feature.service;
 
+import com.jooq.feature.model.ItemDto;
+import com.jooq.feature.model.OrderDto;
 import com.jooq.feature.model.enums.OrderStatusEnum;
-import com.jooq.feature.model.wrapper.OrderContext;
-import com.jooq.my_schema.tables.records.OrdersRecord;
+import com.jooq.feature.model.wrapper.CustomerOrderContext;
+import com.jooq.feature.model.wrapper.OrderResContext;
 
 import java.util.List;
 
 public interface OrderService {
 
-    OrderContext addCustomerOrder(Long customerId, OrderContext context);
+    OrderResContext addCustomerOrder(Long customerId, OrderDto orderDto, List<Long> itemIds);
 
-    List<OrderContext> getAllOrders();
+    List<CustomerOrderContext> getAllOrders();
 
-    OrderContext getOrderById(Long orderId);
+    OrderResContext getOrderById(Long orderId);
 
-    List<OrderContext> getOrdersByCustomerId(Long customerId);
+    List<OrderResContext> getOrdersByCustomerId(Long customerId);
 
-    List<OrderContext> getCustomerOrderByStatus(Long customerId, OrderStatusEnum status);
+    List<OrderResContext> getCustomerOrderByStatus(Long customerId, OrderStatusEnum status);
 
-    List<OrderContext> getOrdersByStatus(OrderStatusEnum status);
+    List<OrderResContext> getOrdersByStatus(OrderStatusEnum status);
+
+    List<ItemDto> getItemsByOrderId(Long orderId);
 
     void removeOrderById(Long id);
 }

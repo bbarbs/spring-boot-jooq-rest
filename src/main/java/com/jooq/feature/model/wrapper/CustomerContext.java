@@ -1,8 +1,10 @@
 package com.jooq.feature.model.wrapper;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jooq.feature.model.AddressDto;
 import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.PassportDto;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
@@ -13,7 +15,13 @@ import java.util.List;
 public class CustomerContext {
 
     private CustomerDto customer;
+
+    @ApiModelProperty(hidden = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private PassportDto passport;
+
+    @ApiModelProperty(hidden = true)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<AddressDto> address;
 
     public CustomerContext() {

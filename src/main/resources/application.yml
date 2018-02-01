@@ -1,6 +1,9 @@
 spring:
   profiles:
       active: dev
+  jackson:
+    deserialization:
+      ACCEPT_SINGLE_VALUE_AS_ARRAY: true
 management:
   security:
     enabled: false
@@ -45,3 +48,4 @@ spring:
   jooq:
     sql-dialect: h2
   profiles: prod
+

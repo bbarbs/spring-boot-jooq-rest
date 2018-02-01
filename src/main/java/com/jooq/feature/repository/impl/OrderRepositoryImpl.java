@@ -2,7 +2,9 @@ package com.jooq.feature.repository.impl;
 
 import com.jooq.feature.model.enums.OrderStatusEnum;
 import com.jooq.feature.repository.OrderRepository;
+import com.jooq.my_schema.tables.Customer;
 import com.jooq.my_schema.tables.Orders;
+import com.jooq.my_schema.tables.records.CustomerRecord;
 import com.jooq.my_schema.tables.records.OrdersRecord;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
@@ -79,5 +81,17 @@ public class OrderRepositoryImpl implements OrderRepository {
         return this.dslContext.selectFrom(Orders.ORDERS)
                 .where(Orders.ORDERS.STATUS.eq(String.valueOf(status)))
                 .fetch();
+    }
+
+    @Override
+    public CustomerRecord getCustomerByOrderId(Long orderId) {
+        return this.dslContext.select()
+                .from(Orders.ORDERS)
+                .join(Customer.CUSTOMER)
+                .on(Customer.CUSTOMER.ID.eq(Orders.ORDERS.FK_CUST_ID))
+                .where(Orders.ORDERS.ID.eq(Math.toIntExact(orderId)))
+                .fetchOne().map(record -> new CustomerRecord(record.get(Customer.CUSTOMER.ID),
+                        record.get(Customer.CUSTOMER.FIRSTNAME),
+                        record.get(Customer.CUSTOMER.LASTNAME)));
     }
 }

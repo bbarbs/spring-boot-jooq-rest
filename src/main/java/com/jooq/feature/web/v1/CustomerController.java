@@ -2,7 +2,6 @@ package com.jooq.feature.web.v1;
 
 import com.jooq.core.rest.ApiResponse;
 import com.jooq.core.rest.patch.Patch;
-import com.jooq.core.util.RestUtil;
 import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.wrapper.CustomerContext;
 import com.jooq.feature.service.CustomerService;
@@ -25,9 +24,6 @@ public class CustomerController {
     @Inject
     CustomerService customerService;
 
-    @Inject
-    RestUtil restUtil;
-
     /**
      * Get list of customers.
      *
@@ -47,7 +43,7 @@ public class CustomerController {
     /**
      * Add customer.
      *
-     * @param context
+     * @param dto
      * @return
      */
     @ApiOperation(
@@ -58,9 +54,11 @@ public class CustomerController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
-    public ApiResponse addCustomer(@ApiParam(value = "Customer complete details", required = true) @RequestBody CustomerContext context) {
-        List<CustomerContext> list = Arrays.asList(this.customerService.addCustomer(context));
-        return this.restUtil.createApiResponse(HttpStatus.CREATED.value(), HttpStatus.CREATED, list);
+    public ApiResponse<CustomerDto> addCustomer(@ApiParam(value = "Customer complete details", required = true) @RequestBody CustomerDto dto) {
+        CustomerDto customerDto = this.customerService.addCustomer(dto);
+        return new ApiResponse<>(HttpStatus.CREATED.value(),
+                HttpStatus.CREATED,
+                Arrays.asList(customerDto));
     }
 
     /**
@@ -76,7 +74,7 @@ public class CustomerController {
             value = "/customers/{customerId}",
             produces = APPLICATION_JSON_VALUE
     )
-    public CustomerContext getCustomerById(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
+    public CustomerDto getCustomerById(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
         return this.customerService.getCustomerById(customerId);
     }
 
@@ -95,10 +93,12 @@ public class CustomerController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
-    public ApiResponse patchCustomerInfo(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
-                                         @ApiParam(value = "Patch info", required = true) @RequestBody Patch patch) {
+    public ApiResponse<CustomerDto> patchCustomerInfo(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
+                                                      @ApiParam(value = "Patch info", required = true) @RequestBody Patch patch) {
         CustomerDto dto = this.customerService.patchCustomerInfo(customerId, patch);
-        return this.restUtil.createApiResponse(HttpStatus.CREATED.value(), HttpStatus.CREATED, Arrays.asList(dto));
+        return new ApiResponse<>(HttpStatus.CREATED.value(),
+                HttpStatus.CREATED,
+                Arrays.asList(dto));
     }
 
     /**

@@ -1,27 +1,31 @@
 package com.jooq.feature.model;
 
 import com.jooq.my_schema.tables.records.PassportRecord;
+import io.swagger.annotations.ApiModelProperty;
 import org.jooq.RecordMapper;
 
 public class PassportDto implements RecordMapper<PassportRecord, PassportDto> {
 
-    private int id;
+    @ApiModelProperty(hidden = true)
+    private Long passportId;
+
+    @ApiModelProperty(required = true)
     private String passportNumber;
 
     public PassportDto() {
     }
 
-    public PassportDto(int id, String passportNumber) {
-        this.id = id;
+    public PassportDto(Long passportId, String passportNumber) {
+        this.passportId = passportId;
         this.passportNumber = passportNumber;
     }
 
-    public int getId() {
-        return id;
+    public Long getPassportId() {
+        return passportId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPassportId(Long passportId) {
+        this.passportId = passportId;
     }
 
     public String getPassportNumber() {
@@ -34,6 +38,6 @@ public class PassportDto implements RecordMapper<PassportRecord, PassportDto> {
 
     @Override
     public PassportDto map(PassportRecord record) {
-        return new PassportDto(record.getId(), record.getPassportNumber());
+        return new PassportDto(Long.valueOf(record.getId()), record.getPassportNumber());
     }
 }

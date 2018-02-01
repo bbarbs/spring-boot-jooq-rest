@@ -1,39 +1,47 @@
 package com.jooq.feature.model;
 
 import com.jooq.my_schema.tables.records.ItemsRecord;
+import io.swagger.annotations.ApiModelProperty;
 import org.jooq.RecordMapper;
 
 public class ItemDto implements RecordMapper<ItemsRecord, ItemDto> {
 
-    private Integer id;
-    private String  code;
-    private String  itemName;
-    private String  description;
+    @ApiModelProperty(hidden = true)
+    private Long itemId;
+
+    @ApiModelProperty(required = true)
+    private String itemCode;
+
+    @ApiModelProperty(required = true)
+    private String itemName;
+
+    @ApiModelProperty(required = true)
+    private String itemDescription;
 
     public ItemDto() {
     }
 
-    public ItemDto(Integer id, String code, String itemName, String description) {
-        this.id = id;
-        this.code = code;
+    public ItemDto(Long itemId, String itemCode, String itemName, String itemDescription) {
+        this.itemId = itemId;
+        this.itemCode = itemCode;
         this.itemName = itemName;
-        this.description = description;
+        this.itemDescription = itemDescription;
     }
 
-    public Integer getId() {
-        return id;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
-    public String getCode() {
-        return code;
+    public String getItemCode() {
+        return itemCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
     }
 
     public String getItemName() {
@@ -44,16 +52,16 @@ public class ItemDto implements RecordMapper<ItemsRecord, ItemDto> {
         this.itemName = itemName;
     }
 
-    public String getDescription() {
-        return description;
+    public String getItemDescription() {
+        return itemDescription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
     }
 
     @Override
     public ItemDto map(ItemsRecord record) {
-        return new ItemDto(record.getId(), record.getCode(), record.getItemName(), record.getDescription());
+        return new ItemDto(Long.valueOf(record.getId()), record.getCode(), record.getItemName(), record.getDescription());
     }
 }

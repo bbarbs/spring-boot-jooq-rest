@@ -1,8 +1,8 @@
 package com.jooq.core.exception.handler;
 
-import com.jooq.core.exception.ErrorMessage;
 import com.jooq.core.exception.ApiException;
 import com.jooq.core.exception.ApiExceptionMessage;
+import com.jooq.core.exception.ErrorMessage;
 import com.jooq.core.exception.global.PatchOperationNotSupported;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
