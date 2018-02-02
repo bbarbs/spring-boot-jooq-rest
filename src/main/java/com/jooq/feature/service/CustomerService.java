@@ -5,13 +5,13 @@ import com.jooq.feature.model.AddressDto;
 import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.PassportDto;
 import com.jooq.feature.model.enums.AddressEnum;
-import com.jooq.feature.model.wrapper.CustomerContext;
+import com.jooq.feature.model.wrapper.CustomerWrapper;
 
 import java.util.List;
 
 public interface CustomerService {
 
-    List<CustomerContext> getAllCustomersInfo();
+    List<CustomerWrapper> getAllCustomersInfo();
 
     CustomerDto addCustomer(CustomerDto dto);
 

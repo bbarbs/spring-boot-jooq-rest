@@ -6,8 +6,8 @@ import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.ItemDto;
 import com.jooq.feature.model.OrderDto;
 import com.jooq.feature.model.enums.OrderStatusEnum;
-import com.jooq.feature.model.wrapper.CustomerOrderContext;
-import com.jooq.feature.model.wrapper.OrderResContext;
+import com.jooq.feature.model.wrapper.CustomerOrderWrapper;
+import com.jooq.feature.model.wrapper.OrderResponseWrapper;
 import com.jooq.feature.repository.ItemOrderRepository;
 import com.jooq.feature.repository.ItemRepository;
 import com.jooq.feature.repository.OrderRepository;
@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     ItemRepository itemRepository;
 
     @Override
-    public OrderResContext addCustomerOrder(Long customerId, OrderDto orderDto, List<Long> itemIds) throws ItemNotFoundException {
+    public OrderResponseWrapper addCustomerOrder(Long customerId, OrderDto orderDto, List<Long> itemIds) throws ItemNotFoundException {
         // Get list of items.
         List<ItemsRecord> itemsRecords = new ArrayList<>();
         for (Long id : itemIds) {
@@ -63,36 +63,36 @@ public class OrderServiceImpl implements OrderService {
             this.itemOrderRepository.save(itemsOrdersRecord);
         }
         // Set response.
-        OrderResContext orderResContext = new OrderResContext();
+        OrderResponseWrapper orderResponseWrapper = new OrderResponseWrapper();
         // Map item record to dto.
         List<ItemDto> itemDtos = new ArrayList<>();
         itemsRecords.stream().forEach(itemsRecord -> itemDtos.add(itemsRecord.map(record -> new ItemDto().map((ItemsRecord) record))));
-        orderResContext.setItems(itemDtos);
+        orderResponseWrapper.setItems(itemDtos);
         // Add order.
-        orderResContext.setOrder(addedOrder.map(record -> new OrderDto().map((OrdersRecord) record)));
-        return orderResContext;
+        orderResponseWrapper.setOrder(addedOrder.map(record -> new OrderDto().map((OrdersRecord) record)));
+        return orderResponseWrapper;
     }
 
     @Override
-    public List<CustomerOrderContext> getAllOrders() {
-        List<CustomerOrderContext> contexts = new ArrayList<>();
+    public List<CustomerOrderWrapper> getAllOrders() {
+        List<CustomerOrderWrapper> contexts = new ArrayList<>();
         // Get list of orders.
         List<OrdersRecord> ordersRecords = this.orderRepository.findAll();
         for (OrdersRecord record : ordersRecords) {
-            CustomerOrderContext orderContext = new CustomerOrderContext();
+            CustomerOrderWrapper orderContext = new CustomerOrderWrapper();
             // Add customer.
             CustomerRecord customerRecord = this.orderRepository.getCustomerByOrderId(Long.valueOf(record.getId()));
             orderContext.setCustomer(customerRecord.map(record1 -> new CustomerDto().map((CustomerRecord) record1)));
             // Add order context.
-            OrderResContext orderResContext = new OrderResContext();
-            orderResContext.setOrder(record.map(record1 -> new OrderDto().map((OrdersRecord) record1)));
+            OrderResponseWrapper orderResponseWrapper = new OrderResponseWrapper();
+            orderResponseWrapper.setOrder(record.map(record1 -> new OrderDto().map((OrdersRecord) record1)));
             // Order items.
             List<ItemDto> itemDtos = new ArrayList<>();
             List<ItemsRecord> itemsRecords = this.itemOrderRepository.getItemsByOrderId(Long.valueOf(record.getId()));
             itemsRecords.stream()
                     .forEach(itemsRecord -> itemDtos.add(itemsRecord.map(record12 -> new ItemDto().map((ItemsRecord) record12))));
-            orderResContext.setItems(itemDtos);
-            orderContext.setOrder(orderResContext);
+            orderResponseWrapper.setItems(itemDtos);
+            orderContext.setOrder(orderResponseWrapper);
             // Add to context.
             contexts.add(orderContext);
         }
@@ -111,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResContext getOrderById(Long orderId) throws OrderNotFoundException {
+    public OrderResponseWrapper getOrderById(Long orderId) throws OrderNotFoundException {
         OrdersRecord ordersRecord = this.orderRepository.findOne(orderId);
         if (ordersRecord == null) {
             throw new OrderNotFoundException("Order not found");
@@ -124,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
             itemsRecords.add(itemsRecord);
         }
         // Set order context.
-        OrderResContext context = new OrderResContext();
+        OrderResponseWrapper context = new OrderResponseWrapper();
         context.setOrder(ordersRecord.map(record -> new OrderDto().map((OrdersRecord) record)));
         // Map item record to dto.
         List<ItemDto> itemDtos = new ArrayList<>();
@@ -136,25 +136,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResContext> getOrdersByCustomerId(Long customerId) {
+    public List<OrderResponseWrapper> getOrdersByCustomerId(Long customerId) {
         List<OrdersRecord> ordersRecords = this.orderRepository.getOrdersByCustomerId(customerId);
-        List<OrderResContext> contexts = new ArrayList<>();
+        List<OrderResponseWrapper> contexts = new ArrayList<>();
         mapOrderRecordToOrderResContextList(ordersRecords, contexts);
         return contexts;
     }
 
     @Override
-    public List<OrderResContext> getCustomerOrderByStatus(Long customerId, OrderStatusEnum status) {
+    public List<OrderResponseWrapper> getCustomerOrderByStatus(Long customerId, OrderStatusEnum status) {
         List<OrdersRecord> ordersRecords = this.orderRepository.getCustomerOrderByStatus(customerId, status);
-        List<OrderResContext> contexts = new ArrayList<>();
+        List<OrderResponseWrapper> contexts = new ArrayList<>();
         mapOrderRecordToOrderResContextList(ordersRecords, contexts);
         return contexts;
     }
 
     @Override
-    public List<OrderResContext> getOrdersByStatus(OrderStatusEnum status) {
+    public List<OrderResponseWrapper> getOrdersByStatus(OrderStatusEnum status) {
         List<OrdersRecord> ordersRecords = this.orderRepository.getOrdersByStatus(status);
-        List<OrderResContext> contexts = new ArrayList<>();
+        List<OrderResponseWrapper> contexts = new ArrayList<>();
         mapOrderRecordToOrderResContextList(ordersRecords, contexts);
         return contexts;
     }
@@ -195,9 +195,9 @@ public class OrderServiceImpl implements OrderService {
      * @param ordersRecords
      * @param contexts
      */
-    private void mapOrderRecordToOrderResContextList(List<OrdersRecord> ordersRecords, List<OrderResContext> contexts) {
+    private void mapOrderRecordToOrderResContextList(List<OrdersRecord> ordersRecords, List<OrderResponseWrapper> contexts) {
         for (OrdersRecord record : ordersRecords) {
-            OrderResContext context = new OrderResContext();
+            OrderResponseWrapper context = new OrderResponseWrapper();
             // Set order dto.
             context.setOrder(record.map(orderRecord -> new OrderDto().map((OrdersRecord) orderRecord)));
             // Get item dto.

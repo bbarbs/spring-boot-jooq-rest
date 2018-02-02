@@ -10,7 +10,7 @@ import com.jooq.feature.model.AddressDto;
 import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.PassportDto;
 import com.jooq.feature.model.enums.AddressEnum;
-import com.jooq.feature.model.wrapper.CustomerContext;
+import com.jooq.feature.model.wrapper.CustomerWrapper;
 import com.jooq.feature.repository.AddressRepository;
 import com.jooq.feature.repository.CustomerRepository;
 import com.jooq.feature.repository.PassportRepository;
@@ -42,13 +42,13 @@ public class CustomerServiceImpl implements CustomerService {
     PassportRepository passportRepository;
 
     @Override
-    public List<CustomerContext> getAllCustomersInfo() {
-        List<CustomerContext> list = new ArrayList<>();
+    public List<CustomerWrapper> getAllCustomersInfo() {
+        List<CustomerWrapper> list = new ArrayList<>();
         // Get list of customers.
         List<CustomerRecord> customerRecords = this.customerRepository.findAll();
         // Get customer additional details.
         for (CustomerRecord customerRecord : customerRecords) {
-            CustomerContext context = new CustomerContext();
+            CustomerWrapper context = new CustomerWrapper();
             context.setCustomer(new CustomerDto().map(customerRecord));
             // Get customer passport.
             List<PassportRecord> passportRecords = Keys.CONSTRAINT_77.fetchChildren(customerRecord);

@@ -3,7 +3,7 @@ package com.jooq.feature.web.v1;
 import com.jooq.core.rest.ApiResponse;
 import com.jooq.core.rest.patch.Patch;
 import com.jooq.feature.model.CustomerDto;
-import com.jooq.feature.model.wrapper.CustomerContext;
+import com.jooq.feature.model.wrapper.CustomerWrapper;
 import com.jooq.feature.service.CustomerService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -36,7 +36,7 @@ public class CustomerController {
             value = "/customers",
             produces = APPLICATION_JSON_VALUE
     )
-    public List<CustomerContext> getAllCustomers() {
+    public List<CustomerWrapper> getAllCustomers() {
         return this.customerService.getAllCustomersInfo();
     }
 

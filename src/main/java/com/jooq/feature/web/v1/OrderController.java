@@ -3,10 +3,11 @@ package com.jooq.feature.web.v1;
 import com.jooq.core.rest.ApiResponse;
 import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.ItemDto;
+import com.jooq.feature.model.OrderDto;
 import com.jooq.feature.model.enums.OrderStatusEnum;
-import com.jooq.feature.model.wrapper.CustomerOrderContext;
-import com.jooq.feature.model.wrapper.OrderReqContext;
-import com.jooq.feature.model.wrapper.OrderResContext;
+import com.jooq.feature.model.wrapper.CustomerOrderWrapper;
+import com.jooq.feature.model.wrapper.OrderRequestWrapper;
+import com.jooq.feature.model.wrapper.OrderResponseWrapper;
 import com.jooq.feature.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -40,7 +41,7 @@ public class OrderController {
             value = "/customers/{customerId}/orders",
             produces = APPLICATION_JSON_VALUE
     )
-    public List<OrderResContext> getOrdersByCustomerId(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
+    public List<OrderResponseWrapper> getOrdersByCustomerId(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
         return this.orderService.getOrdersByCustomerId(customerId);
     }
 
@@ -59,12 +60,12 @@ public class OrderController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
-    public ApiResponse<OrderResContext> addCustomerOrder(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
-                                                         @ApiParam(value = "Order details", required = true) @RequestBody OrderReqContext reqContext) {
-        OrderResContext orderResContext = this.orderService.addCustomerOrder(customerId, reqContext.getOrder(), reqContext.getItemIds());
+    public ApiResponse<OrderResponseWrapper> addCustomerOrder(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
+                                                              @ApiParam(value = "Order details", required = true) @RequestBody OrderRequestWrapper reqContext) {
+        OrderResponseWrapper orderResponseWrapper = this.orderService.addCustomerOrder(customerId, reqContext.getOrder(), reqContext.getItemIds());
         return new ApiResponse<>(HttpStatus.CREATED.value(),
                 HttpStatus.CREATED,
-                Arrays.asList(orderResContext));
+                Arrays.asList(orderResponseWrapper));
     }
 
     /**
@@ -79,7 +80,7 @@ public class OrderController {
             value = "/orders",
             produces = APPLICATION_JSON_VALUE
     )
-    public List<CustomerOrderContext> getAllOrders() {
+    public List<CustomerOrderWrapper> getAllOrders() {
         return this.orderService.getAllOrders();
     }
 
@@ -96,10 +97,10 @@ public class OrderController {
             value = "/orders/{orderId}",
             produces = APPLICATION_JSON_VALUE
     )
-    public CustomerOrderContext getOrderById(@ApiParam(value = "Order Id", required = true) @PathVariable("orderId") Long orderId) {
-        OrderResContext resContext = this.orderService.getOrderById(orderId);
+    public CustomerOrderWrapper getOrderById(@ApiParam(value = "Order Id", required = true) @PathVariable("orderId") Long orderId) {
+        OrderResponseWrapper resContext = this.orderService.getOrderById(orderId);
         CustomerDto customerDto = this.orderService.getCustomerByOrderId(orderId);
-        return new CustomerOrderContext(customerDto, resContext);
+        return new CustomerOrderWrapper(customerDto, resContext);
     }
 
     /**
@@ -117,8 +118,8 @@ public class OrderController {
             params = "status",
             produces = APPLICATION_JSON_VALUE
     )
-    public List<OrderResContext> getCustomerOrderByStatus(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
-                                                          @ApiParam(value = "Order status", required = true) @RequestParam("status") OrderStatusEnum status) {
+    public List<OrderResponseWrapper> getCustomerOrderByStatus(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
+                                                               @ApiParam(value = "Order status", required = true) @RequestParam("status") OrderStatusEnum status) {
         return this.orderService.getCustomerOrderByStatus(customerId, status);
     }
 
@@ -136,7 +137,7 @@ public class OrderController {
             params = "status",
             produces = APPLICATION_JSON_VALUE
     )
-    public List<OrderResContext> getOrdersByStatus(@ApiParam(value = "Order status", required = true) @RequestParam("status") OrderStatusEnum status) {
+    public List<OrderResponseWrapper> getOrdersByStatus(@ApiParam(value = "Order status", required = true) @RequestParam("status") OrderStatusEnum status) {
         return this.orderService.getOrdersByStatus(status);
     }
 
@@ -155,7 +156,7 @@ public class OrderController {
     )
     public ResponseEntity<?> removeOrderById(@ApiParam(value = "Order Id", required = true) @PathVariable("orderId") Long orderId) {
         this.orderService.removeOrderById(orderId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**

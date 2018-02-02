@@ -1,7 +1,7 @@
 package com.jooq.web.v1;
 
 import com.jooq.feature.model.CustomerDto;
-import com.jooq.feature.model.wrapper.CustomerContext;
+import com.jooq.feature.model.wrapper.CustomerWrapper;
 import com.jooq.feature.service.impl.CustomerServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +47,7 @@ public class CustomerControllerTest {
         dto.setId(1);
         dto.setFirstname("Test");
         dto.setLastname("Test");
-        CustomerContext context = new CustomerContext();
+        CustomerWrapper context = new CustomerWrapper();
         context.setCustomer(dto);
         when(this.customerService.getCustomerById(Mockito.anyLong())).thenReturn(context);
         this.mockMvc.perform(get("/api/v1/customers/1")

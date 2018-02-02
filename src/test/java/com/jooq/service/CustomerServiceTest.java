@@ -4,7 +4,7 @@ import com.jooq.feature.model.AddressDto;
 import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.PassportDto;
 import com.jooq.feature.model.enums.AddressEnum;
-import com.jooq.feature.model.wrapper.CustomerContext;
+import com.jooq.feature.model.wrapper.CustomerWrapper;
 import com.jooq.feature.service.impl.CustomerServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,12 +41,12 @@ public class CustomerServiceTest {
         addressDto.setType(AddressEnum.PRIMARY);
         addressDto.setAddress("Cebu");
         // Set context.
-        CustomerContext context = new CustomerContext();
+        CustomerWrapper context = new CustomerWrapper();
         context.setCustomer(customerDto);
         context.setPassport(passportDto);
         context.setAddress(Arrays.asList(addressDto));
         // Result
-        CustomerContext result = this.customerService.addCustomer(context);
+        CustomerWrapper result = this.customerService.addCustomer(context);
         assertNotNull(result);
         assertThat(result.getCustomer().getFirstname()).isEqualTo(customerDto.getFirstname());
     }
