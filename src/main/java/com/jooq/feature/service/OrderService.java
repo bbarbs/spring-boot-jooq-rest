@@ -1,5 +1,6 @@
 package com.jooq.feature.service;
 
+import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.ItemDto;
 import com.jooq.feature.model.OrderDto;
 import com.jooq.feature.model.enums.OrderStatusEnum;
@@ -23,6 +24,8 @@ public interface OrderService {
     List<OrderResContext> getOrdersByStatus(OrderStatusEnum status);
 
     List<ItemDto> getItemsByOrderId(Long orderId);
+
+    CustomerDto getCustomerByOrderId(Long orderId);
 
     void removeOrderById(Long id);
 }

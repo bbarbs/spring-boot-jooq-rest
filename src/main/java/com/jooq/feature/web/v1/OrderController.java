@@ -1,6 +1,7 @@
 package com.jooq.feature.web.v1;
 
 import com.jooq.core.rest.ApiResponse;
+import com.jooq.feature.model.CustomerDto;
 import com.jooq.feature.model.ItemDto;
 import com.jooq.feature.model.enums.OrderStatusEnum;
 import com.jooq.feature.model.wrapper.CustomerOrderContext;
@@ -95,8 +96,10 @@ public class OrderController {
             value = "/orders/{orderId}",
             produces = APPLICATION_JSON_VALUE
     )
-    public OrderResContext getOrderById(@ApiParam(value = "Order Id", required = true) @PathVariable("orderId") Long orderId) {
-        return this.orderService.getOrderById(orderId);
+    public CustomerOrderContext getOrderById(@ApiParam(value = "Order Id", required = true) @PathVariable("orderId") Long orderId) {
+        OrderResContext resContext = this.orderService.getOrderById(orderId);
+        CustomerDto customerDto = this.orderService.getCustomerByOrderId(orderId);
+        return new CustomerOrderContext(customerDto, resContext);
     }
 
     /**

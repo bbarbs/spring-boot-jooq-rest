@@ -1,13 +1,15 @@
 package com.jooq.feature.repository;
 
-import com.jooq.core.dao.IGenericDao;
+import com.jooq.core.repository.IGenericRepository;
 import com.jooq.feature.model.enums.OrderStatusEnum;
 import com.jooq.my_schema.tables.records.CustomerRecord;
 import com.jooq.my_schema.tables.records.OrdersRecord;
 
 import java.util.List;
 
-public interface OrderRepository extends IGenericDao<OrdersRecord> {
+public interface OrderRepository extends IGenericRepository<OrdersRecord> {
+
+    boolean exist(Long id);
 
     List<OrdersRecord> getOrdersByCustomerId(Long customerId);
 

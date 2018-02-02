@@ -170,6 +170,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public CustomerDto getCustomerByOrderId(Long orderId) throws OrderNotFoundException {
+        if(this.orderRepository.exist(orderId)) {
+            CustomerRecord record = this.orderRepository.getCustomerByOrderId(orderId);
+            return record.map(record1 -> new CustomerDto().map((CustomerRecord) record1));
+        }
+        else {
+            throw new OrderNotFoundException("Order not found");
+        }
+    }
+
+    @Override
     public void removeOrderById(Long id) throws OrderNotFoundException {
         OrdersRecord record = this.orderRepository.findOne(id);
         if (record == null) {

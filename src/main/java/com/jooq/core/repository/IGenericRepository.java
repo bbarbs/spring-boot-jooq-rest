@@ -1,4 +1,4 @@
-package com.jooq.core.dao;
+package com.jooq.core.repository;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import java.util.List;
  * @param <T>
  */
 
-public interface IGenericDao<T> {
+public interface IGenericRepository<T> {
 
     List<T> findAll();
 

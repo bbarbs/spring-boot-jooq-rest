@@ -62,6 +62,15 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    public boolean exist(Long id) {
+        return this.dslContext.fetchExists(
+                this.dslContext.selectOne()
+                        .from(Orders.ORDERS)
+                        .where(Orders.ORDERS.ID.eq(Math.toIntExact(id)))
+        );
+    }
+
+    @Override
     public List<OrdersRecord> getOrdersByCustomerId(Long customerId) {
         return this.dslContext.selectFrom(Orders.ORDERS)
                 .where(Orders.ORDERS.FK_CUST_ID.eq(Math.toIntExact(customerId)))
