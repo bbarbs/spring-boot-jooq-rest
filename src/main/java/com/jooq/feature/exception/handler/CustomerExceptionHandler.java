@@ -5,6 +5,7 @@ import com.jooq.core.exception.ApiExceptionMessage;
 import com.jooq.core.exception.ErrorMessage;
 import com.jooq.feature.exception.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,9 +25,13 @@ public class CustomerExceptionHandler {
      * @return
      */
     @ExceptionHandler(CustomerNotFoundException.class)
-    public ApiExceptionMessage customerNotFoundException(ApiException e) {
-        return new ApiExceptionMessage(new Date(), HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND, new ErrorMessage(e.getMessage()));
+    public ResponseEntity<ApiExceptionMessage> customerNotFoundException(ApiException e) {
+        return new ResponseEntity<>(new ApiExceptionMessage(
+                new Date(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND,
+                new ErrorMessage(e.getMessage())
+        ), HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -36,9 +41,13 @@ public class CustomerExceptionHandler {
      * @return
      */
     @ExceptionHandler(AddressNotFoundException.class)
-    public ApiExceptionMessage addressNotFoundException(ApiException e) {
-        return new ApiExceptionMessage(new Date(), HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND, new ErrorMessage(e.getMessage()));
+    public ResponseEntity<ApiExceptionMessage> addressNotFoundException(ApiException e) {
+        return new ResponseEntity<>(new ApiExceptionMessage(
+                new Date(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND,
+                new ErrorMessage(e.getMessage())
+        ), HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -48,9 +57,13 @@ public class CustomerExceptionHandler {
      * @return
      */
     @ExceptionHandler(PassportNotFoundException.class)
-    public ApiExceptionMessage passportNotFoundException(ApiException e) {
-        return new ApiExceptionMessage(new Date(), HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND, new ErrorMessage(e.getMessage()));
+    public ResponseEntity<ApiExceptionMessage> passportNotFoundException(ApiException e) {
+        return new ResponseEntity<>(new ApiExceptionMessage(
+                new Date(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND,
+                new ErrorMessage(e.getMessage())
+        ), HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -60,9 +73,13 @@ public class CustomerExceptionHandler {
      * @return
      */
     @ExceptionHandler(ItemNotFoundException.class)
-    public ApiExceptionMessage itemNotFoundException(ApiException e) {
-        return new ApiExceptionMessage(new Date(), HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND, new ErrorMessage(e.getMessage()));
+    public ResponseEntity<ApiExceptionMessage> itemNotFoundException(ApiException e) {
+        return new ResponseEntity<>(new ApiExceptionMessage(
+                new Date(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND,
+                new ErrorMessage(e.getMessage())
+        ), HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -72,8 +89,12 @@ public class CustomerExceptionHandler {
      * @return
      */
     @ExceptionHandler(OrderNotFoundException.class)
-    public ApiExceptionMessage orderNotFoundException(ApiException e) {
-        return new ApiExceptionMessage(new Date(), HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND, new ErrorMessage(e.getMessage()));
+    public ResponseEntity<ApiExceptionMessage> orderNotFoundException(ApiException e) {
+        return new ResponseEntity<>(new ApiExceptionMessage(
+                new Date(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND,
+                new ErrorMessage(e.getMessage())
+        ), HttpStatus.NOT_FOUND);
     }
 }
