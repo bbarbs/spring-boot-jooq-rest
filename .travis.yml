@@ -2,5 +2,6 @@ language: java
 jdk:
   - oraclejdk8
 before_install:
- - chmod +x gradlew
- - gradle jooqGenerator
+  - chmod +x gradlew
+  - gradle build
+  - gradle jooqGenerator
