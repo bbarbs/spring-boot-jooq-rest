@@ -7,7 +7,7 @@ This a sample spring boot application that use JOOQ(Java Object Oriented Queryin
 ```
 Sample code generator for Gradle.
 
-task jooqGenerator {
+task jooqGenerator(dependsOn: build) {
 	def writer = new StringWriter()
 	def xml = new groovy.xml.MarkupBuilder(writer)
 			.configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.10.0.xsd') {
@@ -26,6 +26,7 @@ task jooqGenerator {
 				pojos true
 				daos true
 				interfaces true
+				springAnnotations true
 			}
 			target() {
 				packageName('com.jooq')
@@ -70,6 +71,12 @@ Using IDE like Intellij you navigate to Settings > Build,Execution,Deployment > 
 * Note: Don't forget to remove related projects on your next build when you successfully generated the schema in the database.
 
 After you generated the schema you can now run the jooq generator as mentioned in Configuration section.
+<br/>
+You can also use **gradle run** since application plugin is added to run java class in build.gradle.
+```
+apply plugin: 'application'
+mainClassName = "com.jooq.setup.SchemaGenerator"
+```
 
 ## Api Documentation
 * Using Swagger2 to expose api documentation of REST service.
