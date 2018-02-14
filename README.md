@@ -57,8 +57,6 @@ sourceSets {
 ```
 * You can add task also to delete the generated java code.
 ```
-apply plugin: 'base'
-
 clean.doFirst {
 	delete("src/generated/java")
 }
