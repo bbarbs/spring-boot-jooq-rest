@@ -61,11 +61,9 @@ dependencies {
 	testCompile("junit:junit")
 }
 
-mainClassName = "com.jooq.setup.SchemaGenerator"
-
 //============================ JOOQ Generator ==============================
 
-task jooqGenerator {
+task jooqGenerator(dependsOn: build) {
 	def writer = new StringWriter()
 	def xml = new groovy.xml.MarkupBuilder(writer)
 			.configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.10.0.xsd') {
