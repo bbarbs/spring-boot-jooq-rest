@@ -22,6 +22,8 @@ plugins {
 	id 'net.ltgt.apt' version '0.8'
 }
 
+apply plugin: 'application'
+apply plugin: 'base'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
@@ -58,6 +60,8 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile("junit:junit")
 }
+
+mainClassName = "com.jooq.setup.SchemaGenerator"
 
 //============================ JOOQ Generator ==============================
 
@@ -105,3 +109,4 @@ sourceSets {
 clean.doFirst {
 	delete("src/generated/java")
 }
+
