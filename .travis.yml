@@ -4,5 +4,6 @@ jdk:
 before_install:
   - chmod +x gradlew
 script:
+  - gradle run
   - gradle build
 install: true

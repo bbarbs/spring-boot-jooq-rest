@@ -61,6 +61,8 @@ dependencies {
 	testCompile("junit:junit")
 }
 
+mainClassName = "com.jooq.setup.SchemaGenerator"
+
 //============================ JOOQ Generator ==============================
 
 task jooqGenerator(dependsOn: build) {
