@@ -2,6 +2,7 @@
 This a sample spring boot application that use JOOQ(Java Object Oriented Querying) which offer more type safe SQL queries. For more information about JOOQ see: http://www.jooq.org/
 
 ## Configuration
+* **JOOQ**
 * Inorder to generate the Java code from your database we need a code generator. For gradle you can see here: https://www.jooq.org/doc/3.7/manual/code-generation/codegen-gradle/
 ```
 Sample code generator for Gradle.
@@ -38,8 +39,11 @@ task jooqGenerator {
 	)
 }
 ```
+* **Mapstruct**
+* When changes is made in the mapper package do the following when its done.
+> gradle build
 
-## Additional Gradle Config
+## Gradle Config
 
 * You can add also other gradle task to treat the generated folder as source.
 ```
@@ -53,14 +57,12 @@ sourceSets {
 ```
 * You can add task also to delete the generated java code.
 ```
-apply plugin: 'base'
-
 clean.doFirst {
 	delete("src/generated/java")
 }
 ```
 
-## How it Works
+## Generate Schema
 For new checkout in order to prepopulate the schema in the database which by default is using H2. You can run the [SchemaGenerator.class](https://github.com/bbarbs/spring-boot-rest-jooq/blob/master/src/main/java/com/jooq/setup/SchemaGenerator.java) as standalone.
 <br/>
 Using IDE like Intellij you navigate to Settings > Build,Execution,Deployment > Compilers > Excludes and add the parts of the projects that are unrelated to be excluded from compilation. After that you can run the SchemaGenerator.

@@ -22,7 +22,6 @@ plugins {
 	id 'net.ltgt.apt' version '0.8'
 }
 
-apply plugin: 'base'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
