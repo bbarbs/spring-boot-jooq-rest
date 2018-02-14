@@ -6,4 +6,3 @@ before_install:
 script:
   - gradle run
   - gradle build
-install: true
