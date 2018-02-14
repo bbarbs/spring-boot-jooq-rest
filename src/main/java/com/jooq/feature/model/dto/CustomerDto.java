@@ -1,10 +1,10 @@
-package com.jooq.feature.model;
+package com.jooq.feature.model.dto;
 
-import com.jooq.my_schema.tables.records.CustomerRecord;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
-import org.jooq.RecordMapper;
 
-public class CustomerDto implements RecordMapper<CustomerRecord, CustomerDto> {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CustomerDto {
 
     @ApiModelProperty(hidden = true)
     private Long customerId;
@@ -14,15 +14,6 @@ public class CustomerDto implements RecordMapper<CustomerRecord, CustomerDto> {
 
     @ApiModelProperty(required = true)
     private String lastname;
-
-    public CustomerDto() {
-    }
-
-    public CustomerDto(Long customerId, String firstname, String lastname) {
-        this.customerId = customerId;
-        this.firstname = firstname;
-        this.lastname = lastname;
-    }
 
     public Long getCustomerId() {
         return customerId;
@@ -46,10 +37,5 @@ public class CustomerDto implements RecordMapper<CustomerRecord, CustomerDto> {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
-    }
-
-    @Override
-    public CustomerDto map(CustomerRecord record) {
-        return new CustomerDto(Long.valueOf(record.getId()), record.getFirstname(), record.getLastname());
     }
 }

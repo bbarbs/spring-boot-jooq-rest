@@ -1,10 +1,10 @@
-package com.jooq.feature.model;
+package com.jooq.feature.model.dto;
 
-import com.jooq.my_schema.tables.records.ItemsRecord;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
-import org.jooq.RecordMapper;
 
-public class ItemDto implements RecordMapper<ItemsRecord, ItemDto> {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ItemDto {
 
     @ApiModelProperty(hidden = true)
     private Long itemId;
@@ -17,16 +17,6 @@ public class ItemDto implements RecordMapper<ItemsRecord, ItemDto> {
 
     @ApiModelProperty(required = true)
     private String itemDescription;
-
-    public ItemDto() {
-    }
-
-    public ItemDto(Long itemId, String itemCode, String itemName, String itemDescription) {
-        this.itemId = itemId;
-        this.itemCode = itemCode;
-        this.itemName = itemName;
-        this.itemDescription = itemDescription;
-    }
 
     public Long getItemId() {
         return itemId;
@@ -58,10 +48,5 @@ public class ItemDto implements RecordMapper<ItemsRecord, ItemDto> {
 
     public void setItemDescription(String itemDescription) {
         this.itemDescription = itemDescription;
-    }
-
-    @Override
-    public ItemDto map(ItemsRecord record) {
-        return new ItemDto(Long.valueOf(record.getId()), record.getCode(), record.getItemName(), record.getDescription());
     }
 }

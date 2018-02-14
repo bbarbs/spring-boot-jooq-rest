@@ -8,6 +8,10 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ * For test only to check different group api in swagger.
+ */
+
 @RestController
 @RequestMapping(value = "/api/v2")
 public class CustomerControllerV2 {

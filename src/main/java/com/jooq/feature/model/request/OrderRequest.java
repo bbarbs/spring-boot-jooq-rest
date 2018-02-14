@@ -1,28 +1,16 @@
-package com.jooq.feature.model.wrapper;
+package com.jooq.feature.model.request;
 
-import com.jooq.feature.model.OrderDto;
+import com.jooq.feature.model.dto.OrderDto;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
-/**
- * Wrapper for order request.
- */
-
-public class OrderRequestWrapper {
+public class OrderRequest {
 
     private OrderDto order;
 
     @ApiModelProperty(required = true)
     private List<Long> itemIds;
-
-    public OrderRequestWrapper() {
-    }
-
-    public OrderRequestWrapper(OrderDto order, List<Long> itemIds) {
-        this.order = order;
-        this.itemIds = itemIds;
-    }
 
     public OrderDto getOrder() {
         return order;

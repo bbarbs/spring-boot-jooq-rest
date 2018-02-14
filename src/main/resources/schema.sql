@@ -46,18 +46,13 @@ CREATE TABLE IF NOT EXISTS My_Schema.Address (
 /*
   Many to Many relationship.
  */
-CREATE TABLE IF NOT EXISTS My_Schema.Items_Orders (
-  order_id INT ,
-  item_id INT
-);
-
 CREATE TABLE IF NOT EXISTS My_Schema.Orders (
   id INT AUTO_INCREMENT PRIMARY KEY ,
   date_order DATETIME ,
   status VARCHAR(50) ,
   amount DECIMAL(19, 4) ,
   fk_cust_id INT ,
-  FOREIGN KEY (fk_cust_id) REFERENCES My_Schema.Customer (id)
+  FOREIGN KEY (fk_cust_id) REFERENCES My_Schema.Customer (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS My_Schema.Items (
@@ -65,5 +60,12 @@ CREATE TABLE IF NOT EXISTS My_Schema.Items (
   code VARCHAR(50) ,
   item_name VARCHAR(100) ,
   description VARCHAR(300)
+);
+
+CREATE TABLE IF NOT EXISTS My_Schema.Items_Orders (
+  order_id INT ,
+  item_id INT ,
+  FOREIGN KEY (item_id) REFERENCES My_Schema.Items (id) ,
+  FOREIGN KEY (order_id) REFERENCES My_Schema.Orders (id) ON DELETE CASCADE
 );
 

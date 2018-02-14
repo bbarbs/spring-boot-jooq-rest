@@ -3,5 +3,7 @@ jdk:
   - oraclejdk8
 before_install:
   - chmod +x gradlew
+script:
+  - gradle clean
   - gradle build
   - gradle jooqGenerator

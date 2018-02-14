@@ -1,16 +1,16 @@
-package com.jooq.feature.model;
+package com.jooq.feature.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jooq.feature.model.enums.OrderStatusEnum;
-import com.jooq.my_schema.tables.records.OrdersRecord;
 import io.swagger.annotations.ApiModelProperty;
-import org.jooq.RecordMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class OrderDto implements RecordMapper<OrdersRecord, OrderDto> {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class OrderDto {
 
     @ApiModelProperty(hidden = true)
     private Long orderId;
@@ -25,16 +25,6 @@ public class OrderDto implements RecordMapper<OrdersRecord, OrderDto> {
 
     @ApiModelProperty(required = true)
     private BigDecimal orderAmount;
-
-    public OrderDto() {
-    }
-
-    public OrderDto(Long orderId, Date orderDate, OrderStatusEnum orderStatus, BigDecimal orderAmount) {
-        this.orderId = orderId;
-        this.orderDate = orderDate;
-        this.orderStatus = orderStatus;
-        this.orderAmount = orderAmount;
-    }
 
     public Long getOrderId() {
         return orderId;
@@ -66,10 +56,5 @@ public class OrderDto implements RecordMapper<OrdersRecord, OrderDto> {
 
     public void setOrderAmount(BigDecimal orderAmount) {
         this.orderAmount = orderAmount;
-    }
-
-    @Override
-    public OrderDto map(OrdersRecord record) {
-        return new OrderDto(Long.valueOf(record.getId()), record.getDateOrder(), OrderStatusEnum.valueOf(record.getStatus()), record.getAmount());
     }
 }

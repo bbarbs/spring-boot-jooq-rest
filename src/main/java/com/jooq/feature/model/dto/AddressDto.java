@@ -1,11 +1,11 @@
-package com.jooq.feature.model;
+package com.jooq.feature.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jooq.feature.model.enums.AddressEnum;
-import com.jooq.my_schema.tables.records.AddressRecord;
 import io.swagger.annotations.ApiModelProperty;
-import org.jooq.RecordMapper;
 
-public class AddressDto implements RecordMapper<AddressRecord, AddressDto> {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class AddressDto {
 
     @ApiModelProperty(hidden = true)
     private Long addressId;
@@ -15,15 +15,6 @@ public class AddressDto implements RecordMapper<AddressRecord, AddressDto> {
 
     @ApiModelProperty(required = true)
     private AddressEnum addressType;
-
-    public AddressDto() {
-    }
-
-    public AddressDto(Long addressId, String address, AddressEnum addressType) {
-        this.addressId = addressId;
-        this.address = address;
-        this.addressType = addressType;
-    }
 
     public Long getAddressId() {
         return addressId;
@@ -47,10 +38,5 @@ public class AddressDto implements RecordMapper<AddressRecord, AddressDto> {
 
     public void setAddressType(AddressEnum addressType) {
         this.addressType = addressType;
-    }
-
-    @Override
-    public AddressDto map(AddressRecord record) {
-        return new AddressDto(Long.valueOf(record.getId()), record.getAddress(), AddressEnum.valueOf(record.getType()));
     }
 }

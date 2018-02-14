@@ -2,16 +2,17 @@ package com.jooq.feature.web.v1;
 
 import com.jooq.core.rest.ApiResponse;
 import com.jooq.core.rest.patch.Patch;
-import com.jooq.feature.model.CustomerDto;
-import com.jooq.feature.model.wrapper.CustomerWrapper;
+import com.jooq.feature.mapper.CustomerMapper;
+import com.jooq.feature.model.dto.CustomerDto;
 import com.jooq.feature.service.CustomerService;
+import com.jooq.my_schema.tables.pojos.Customer;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,8 +22,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "/api/v1")
 public class CustomerController {
 
-    @Inject
+    @Autowired
     CustomerService customerService;
+
+    @Autowired
+    CustomerMapper customerMapper;
 
     /**
      * Get list of customers.
@@ -36,8 +40,9 @@ public class CustomerController {
             value = "/customers",
             produces = APPLICATION_JSON_VALUE
     )
-    public List<CustomerWrapper> getAllCustomers() {
-        return this.customerService.getAllCustomersInfo();
+    public List<CustomerDto> getAllCustomers() {
+        List<Customer> customers = this.customerService.getAllCustomers();
+        return this.customerMapper.mapToCustomerDtoList(customers);
     }
 
     /**
@@ -55,10 +60,10 @@ public class CustomerController {
             produces = APPLICATION_JSON_VALUE
     )
     public ApiResponse<CustomerDto> addCustomer(@ApiParam(value = "Customer complete details", required = true) @RequestBody CustomerDto dto) {
-        CustomerDto customerDto = this.customerService.addCustomer(dto);
+        Customer customer = this.customerService.addCustomer(this.customerMapper.mapToCustomer(dto));
         return new ApiResponse<>(HttpStatus.CREATED.value(),
                 HttpStatus.CREATED,
-                Arrays.asList(customerDto));
+                Arrays.asList(this.customerMapper.mapToCustomerDto(customer)));
     }
 
     /**
@@ -75,7 +80,8 @@ public class CustomerController {
             produces = APPLICATION_JSON_VALUE
     )
     public CustomerDto getCustomerById(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
-        return this.customerService.getCustomerById(customerId);
+        Customer customer = this.customerService.getCustomerById(customerId);
+        return this.customerMapper.mapToCustomerDto(customer);
     }
 
     /**
@@ -93,12 +99,39 @@ public class CustomerController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
-    public ApiResponse<CustomerDto> patchCustomerInfo(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
-                                                      @ApiParam(value = "Patch info", required = true) @RequestBody Patch patch) {
-        CustomerDto dto = this.customerService.patchCustomerInfo(customerId, patch);
-        return new ApiResponse<>(HttpStatus.CREATED.value(),
+    public ApiResponse<CustomerDto> patchCustomer(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
+                                                  @ApiParam(value = "Patch info", required = true) @RequestBody Patch patch) {
+        Customer customer = this.customerService.patchCustomer(customerId, patch);
+        return new ApiResponse<>(
+                HttpStatus.CREATED.value(),
                 HttpStatus.CREATED,
-                Arrays.asList(dto));
+                Arrays.asList(this.customerMapper.mapToCustomerDto(customer))
+        );
+    }
+
+    /**
+     * Update customer by id.
+     *
+     * @param customerId
+     * @param dto
+     * @return
+     */
+    @ApiOperation(
+            value = "Update customer by Id"
+    )
+    @PutMapping(
+            value = "/customers/{customerId}",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE
+    )
+    public ApiResponse<CustomerDto> updateCustomerById(@ApiParam(value = "Customer Id", required = true) @PathVariable(name = "customerId") Long customerId,
+                                                       @ApiParam(value = "Customer details", required = true) @RequestBody CustomerDto dto) {
+        Customer customer = this.customerService.updateCustomer(customerId, this.customerMapper.mapToCustomer(dto));
+        return new ApiResponse<>(
+                HttpStatus.CREATED.value(),
+                HttpStatus.CREATED,
+                Arrays.asList(this.customerMapper.mapToCustomerDto(customer))
+        );
     }
 
     /**

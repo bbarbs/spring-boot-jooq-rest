@@ -1,21 +1,26 @@
 package com.jooq.feature.web.v1;
 
 import com.jooq.core.rest.ApiResponse;
-import com.jooq.feature.model.CustomerDto;
-import com.jooq.feature.model.ItemDto;
-import com.jooq.feature.model.OrderDto;
+import com.jooq.feature.mapper.ItemMapper;
+import com.jooq.feature.mapper.OrderItemMapper;
+import com.jooq.feature.mapper.OrderMapper;
+import com.jooq.feature.model.domain.OrderItem;
+import com.jooq.feature.model.dto.ItemDto;
+import com.jooq.feature.model.dto.OrderDto;
+import com.jooq.feature.model.dto.OrderItemDto;
 import com.jooq.feature.model.enums.OrderStatusEnum;
-import com.jooq.feature.model.wrapper.CustomerOrderWrapper;
-import com.jooq.feature.model.wrapper.OrderRequestWrapper;
-import com.jooq.feature.model.wrapper.OrderResponseWrapper;
+import com.jooq.feature.model.request.OrderRequest;
+import com.jooq.feature.service.ItemService;
 import com.jooq.feature.service.OrderService;
+import com.jooq.my_schema.tables.pojos.Items;
+import com.jooq.my_schema.tables.pojos.Orders;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,8 +30,20 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "/api/v1")
 public class OrderController {
 
-    @Inject
+    @Autowired
     OrderService orderService;
+
+    @Autowired
+    ItemService itemService;
+
+    @Autowired
+    OrderMapper orderMapper;
+
+    @Autowired
+    ItemMapper itemMapper;
+
+    @Autowired
+    OrderItemMapper orderItemMapper;
 
     /**
      * Get orders by customer.
@@ -41,15 +58,16 @@ public class OrderController {
             value = "/customers/{customerId}/orders",
             produces = APPLICATION_JSON_VALUE
     )
-    public List<OrderResponseWrapper> getOrdersByCustomerId(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
-        return this.orderService.getOrdersByCustomerId(customerId);
+    public List<OrderItemDto> getOrdersByCustomerId(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
+        List<OrderItem> orders = this.orderService.getOrdersByCustomerId(customerId);
+        return this.orderItemMapper.mapToOrderItemDtoList(orders);
     }
 
     /**
      * Add customer order.
      *
      * @param customerId
-     * @param reqContext
+     * @param orderRequest
      * @return
      */
     @ApiOperation(
@@ -60,12 +78,14 @@ public class OrderController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
-    public ApiResponse<OrderResponseWrapper> addCustomerOrder(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
-                                                              @ApiParam(value = "Order details", required = true) @RequestBody OrderRequestWrapper reqContext) {
-        OrderResponseWrapper orderResponseWrapper = this.orderService.addCustomerOrder(customerId, reqContext.getOrder(), reqContext.getItemIds());
-        return new ApiResponse<>(HttpStatus.CREATED.value(),
+    public ApiResponse<OrderDto> addCustomerOrder(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
+                                                  @ApiParam(value = "Order details", required = true) @RequestBody OrderRequest orderRequest) {
+        Orders orders = this.orderService.addCustomerOrder(customerId, this.orderMapper.mapToOrders(orderRequest.getOrder()), orderRequest.getItemIds());
+        return new ApiResponse<>(
+                HttpStatus.CREATED.value(),
                 HttpStatus.CREATED,
-                Arrays.asList(orderResponseWrapper));
+                Arrays.asList(this.orderMapper.mapToOrderDto(orders))
+        );
     }
 
     /**
@@ -80,8 +100,9 @@ public class OrderController {
             value = "/orders",
             produces = APPLICATION_JSON_VALUE
     )
-    public List<CustomerOrderWrapper> getAllOrders() {
-        return this.orderService.getAllOrders();
+    public List<OrderItemDto> getAllOrders() {
+        List<OrderItem> orders = this.orderService.getAllOrders();
+        return this.orderItemMapper.mapToOrderItemDtoList(orders);
     }
 
     /**
@@ -97,10 +118,9 @@ public class OrderController {
             value = "/orders/{orderId}",
             produces = APPLICATION_JSON_VALUE
     )
-    public CustomerOrderWrapper getOrderById(@ApiParam(value = "Order Id", required = true) @PathVariable("orderId") Long orderId) {
-        OrderResponseWrapper resContext = this.orderService.getOrderById(orderId);
-        CustomerDto customerDto = this.orderService.getCustomerByOrderId(orderId);
-        return new CustomerOrderWrapper(customerDto, resContext);
+    public OrderItemDto getOrderById(@ApiParam(value = "Order Id", required = true) @PathVariable("orderId") Long orderId) {
+        OrderItem orderItem = this.orderService.getOrderById(orderId);
+        return this.orderItemMapper.mapToOrderItemDto(orderItem);
     }
 
     /**
@@ -118,9 +138,10 @@ public class OrderController {
             params = "status",
             produces = APPLICATION_JSON_VALUE
     )
-    public List<OrderResponseWrapper> getCustomerOrderByStatus(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
-                                                               @ApiParam(value = "Order status", required = true) @RequestParam("status") OrderStatusEnum status) {
-        return this.orderService.getCustomerOrderByStatus(customerId, status);
+    public List<OrderItemDto> getCustomerOrderByStatus(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
+                                                       @ApiParam(value = "Order status", required = true) @RequestParam("status") OrderStatusEnum status) {
+        List<OrderItem> orders = this.orderService.getCustomerOrderByStatus(customerId, status);
+        return this.orderItemMapper.mapToOrderItemDtoList(orders);
     }
 
     /**
@@ -137,8 +158,9 @@ public class OrderController {
             params = "status",
             produces = APPLICATION_JSON_VALUE
     )
-    public List<OrderResponseWrapper> getOrdersByStatus(@ApiParam(value = "Order status", required = true) @RequestParam("status") OrderStatusEnum status) {
-        return this.orderService.getOrdersByStatus(status);
+    public List<OrderItemDto> getOrdersByStatus(@ApiParam(value = "Order status", required = true) @RequestParam("status") OrderStatusEnum status) {
+        List<OrderItem> orders = this.orderService.getOrdersByStatus(status);
+        return this.orderItemMapper.mapToOrderItemDtoList(orders);
     }
 
     /**
@@ -156,7 +178,7 @@ public class OrderController {
     )
     public ResponseEntity<?> removeOrderById(@ApiParam(value = "Order Id", required = true) @PathVariable("orderId") Long orderId) {
         this.orderService.removeOrderById(orderId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -173,6 +195,7 @@ public class OrderController {
             produces = APPLICATION_JSON_VALUE
     )
     public List<ItemDto> getItemsByOrderId(@ApiParam(value = "Order Id", required = true) @PathVariable(name = "orderId") Long orderId) {
-        return this.orderService.getItemsByOrderId(orderId);
+        List<Items> items = this.itemService.getItemsByOrderId(orderId);
+        return this.itemMapper.mapToItemDtoList(items);
     }
 }

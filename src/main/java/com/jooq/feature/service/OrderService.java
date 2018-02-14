@@ -1,31 +1,67 @@
 package com.jooq.feature.service;
 
-import com.jooq.feature.model.CustomerDto;
-import com.jooq.feature.model.ItemDto;
-import com.jooq.feature.model.OrderDto;
+import com.jooq.feature.model.domain.OrderItem;
 import com.jooq.feature.model.enums.OrderStatusEnum;
-import com.jooq.feature.model.wrapper.CustomerOrderWrapper;
-import com.jooq.feature.model.wrapper.OrderResponseWrapper;
+import com.jooq.my_schema.tables.pojos.Orders;
 
 import java.util.List;
 
 public interface OrderService {
 
-    OrderResponseWrapper addCustomerOrder(Long customerId, OrderDto orderDto, List<Long> itemIds);
+    /**
+     * Add customer order.
+     *
+     * @param customerId
+     * @param orders
+     * @param itemIds
+     * @return
+     */
+    Orders addCustomerOrder(Long customerId, Orders orders, List<Long> itemIds);
 
-    List<CustomerOrderWrapper> getAllOrders();
+    /**
+     * Get list of orders.
+     *
+     * @return
+     */
+    List<OrderItem> getAllOrders();
 
-    OrderResponseWrapper getOrderById(Long orderId);
+    /**
+     * Get order by id.
+     *
+     * @param orderId
+     * @return
+     */
+    OrderItem getOrderById(Long orderId);
 
-    List<OrderResponseWrapper> getOrdersByCustomerId(Long customerId);
+    /**
+     * Get orders by customer.
+     *
+     * @param customerId
+     * @return
+     */
+    List<OrderItem> getOrdersByCustomerId(Long customerId);
 
-    List<OrderResponseWrapper> getCustomerOrderByStatus(Long customerId, OrderStatusEnum status);
+    /**
+     * Get customer order by status.
+     *
+     * @param customerId
+     * @param status
+     * @return
+     */
+    List<OrderItem> getCustomerOrderByStatus(Long customerId, OrderStatusEnum status);
 
-    List<OrderResponseWrapper> getOrdersByStatus(OrderStatusEnum status);
+    /**
+     * Get orders by status.
+     *
+     * @param status
+     * @return
+     */
+    List<OrderItem> getOrdersByStatus(OrderStatusEnum status);
 
-    List<ItemDto> getItemsByOrderId(Long orderId);
-
-    CustomerDto getCustomerByOrderId(Long orderId);
-
-    void removeOrderById(Long id);
+    /**
+     * Remove order.
+     *
+     * @param orderId
+     */
+    void removeOrderById(Long orderId);
 }

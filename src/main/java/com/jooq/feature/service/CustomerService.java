@@ -1,35 +1,57 @@
 package com.jooq.feature.service;
 
 import com.jooq.core.rest.patch.Patch;
-import com.jooq.feature.model.AddressDto;
-import com.jooq.feature.model.CustomerDto;
-import com.jooq.feature.model.PassportDto;
-import com.jooq.feature.model.enums.AddressEnum;
-import com.jooq.feature.model.wrapper.CustomerWrapper;
+import com.jooq.my_schema.tables.pojos.Customer;
 
 import java.util.List;
 
 public interface CustomerService {
 
-    List<CustomerWrapper> getAllCustomersInfo();
+    /**
+     * Get list of customers.
+     *
+     * @return
+     */
+    List<Customer> getAllCustomers();
 
-    CustomerDto addCustomer(CustomerDto dto);
+    /**
+     * Add customer order.
+     *
+     * @param customer
+     * @return
+     */
+    Customer addCustomer(Customer customer);
 
-    CustomerDto getCustomerById(Long customerId);
+    /**
+     * Get customer by id.
+     *
+     * @param customerId
+     * @return
+     */
+    Customer getCustomerById(Long customerId);
 
-    CustomerDto patchCustomerInfo(Long customerId, Patch patch);
+    /**
+     * Patch customer data.
+     *
+     * @param customerId
+     * @param patch
+     * @return
+     */
+    Customer patchCustomer(Long customerId, Patch patch);
 
-    AddressDto addCustomerAddress(Long customerId, AddressDto dto);
+    /**
+     * Update customer.
+     *
+     * @param customerId
+     * @param customer
+     * @return
+     */
+    Customer updateCustomer(Long customerId, Customer customer);
 
-    List<AddressDto> getAddressByCustomerId(Long customerId);
-
-    List<AddressDto> getAddressByCustIdAndAddressType(Long customerId, AddressEnum type);
-
-    PassportDto getPassportByCustomerId(Long customerId);
-
-    PassportDto addCustomerPassport(Long customerId, PassportDto dto);
-
-    PassportDto updateCustomerPassport(Long passportId, PassportDto dto);
-
+    /**
+     * Remove customer.
+     *
+     * @param customerId
+     */
     void removeCustomerById(Long customerId);
 }

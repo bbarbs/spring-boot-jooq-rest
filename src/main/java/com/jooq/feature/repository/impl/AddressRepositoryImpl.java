@@ -3,19 +3,34 @@ package com.jooq.feature.repository.impl;
 import com.jooq.feature.model.enums.AddressEnum;
 import com.jooq.feature.repository.AddressRepository;
 import com.jooq.my_schema.Tables;
-import com.jooq.my_schema.tables.Address;
+import com.jooq.my_schema.tables.pojos.Address;
 import com.jooq.my_schema.tables.records.AddressRecord;
 import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.inject.Inject;
 import java.util.List;
 
 @Repository
 public class AddressRepositoryImpl implements AddressRepository {
 
-    @Inject
+    @Autowired
     DSLContext dslContext;
+
+    @Override
+    public List<AddressRecord> getAddressByCustomerId(Long customerId) {
+        return this.dslContext.selectFrom(Tables.ADDRESS)
+                .where(Tables.ADDRESS.FK_CUST_ID.eq(Math.toIntExact(customerId)))
+                .fetch();
+    }
+
+    @Override
+    public List<AddressRecord> getAddressByCustIdAndAddressType(Long customerId, AddressEnum type) {
+        return this.dslContext.selectFrom(Tables.ADDRESS)
+                .where(Tables.ADDRESS.FK_CUST_ID.eq(Math.toIntExact(customerId)))
+                .and(Tables.ADDRESS.TYPE.eq(type.toString()))
+                .fetch();
+    }
 
     @Override
     public List<AddressRecord> findAll() {
@@ -25,50 +40,37 @@ public class AddressRepositoryImpl implements AddressRepository {
 
     @Override
     public AddressRecord findOne(Long id) {
-        return this.dslContext.selectFrom(Address.ADDRESS)
-                .where(Address.ADDRESS.ID.eq(Math.toIntExact(id)))
+        return this.dslContext.selectFrom(Tables.ADDRESS)
+                .where(Tables.ADDRESS.ID.eq(Math.toIntExact(id)))
                 .fetchOne();
     }
 
     @Override
-    public AddressRecord save(AddressRecord entity) {
-        return this.dslContext.insertInto(Address.ADDRESS)
-                .set(Address.ADDRESS.TYPE, String.valueOf(entity.getType()))
-                .set(Address.ADDRESS.ADDRESS_, entity.getAddress())
-                .set(Address.ADDRESS.FK_CUST_ID, entity.getFkCustId())
-                .returning()
-                .fetchOne();
+    public AddressRecord save(Address entity) {
+        AddressRecord record = this.dslContext.newRecord(Tables.ADDRESS, entity);
+        record.store();
+        return record;
     }
 
     @Override
-    public AddressRecord update(Long id, AddressRecord entity) {
-        return this.dslContext.update(Address.ADDRESS)
-                .set(Address.ADDRESS.ADDRESS_, entity.getAddress())
-                .set(Address.ADDRESS.TYPE, String.valueOf(entity.getType()))
-                .where(Address.ADDRESS.ID.eq(Math.toIntExact(id)))
-                .returning()
-                .fetchOne();
+    public AddressRecord update(Address entity) {
+        AddressRecord record = this.dslContext.newRecord(Tables.ADDRESS, entity);
+        record.update();
+        return record;
     }
 
     @Override
-    public void deleteById(Long id) {
-        this.dslContext.delete(Address.ADDRESS)
-                .where(Address.ADDRESS.ID.eq(Math.toIntExact(id)))
+    public void delete(Long id) {
+        this.dslContext.delete(Tables.ADDRESS)
+                .where(Tables.ADDRESS.ID.eq(Math.toIntExact(id)))
                 .execute();
     }
 
     @Override
-    public List<AddressRecord> getAddressByCustomerId(Long customerId) {
-        return this.dslContext.selectFrom(Address.ADDRESS)
-                .where(Address.ADDRESS.FK_CUST_ID.eq(Math.toIntExact(customerId)))
-                .fetch();
-    }
-
-    @Override
-    public List<AddressRecord> getAddressByCustIdAndAddressType(Long customerId, AddressEnum type) {
-        return this.dslContext.selectFrom(Address.ADDRESS)
-                .where(Address.ADDRESS.FK_CUST_ID.eq(Math.toIntExact(customerId)))
-                .and(Address.ADDRESS.TYPE.eq(type.toString()))
-                .fetch();
+    public boolean exist(Long id) {
+        return this.dslContext.selectCount()
+                .from(Tables.ADDRESS)
+                .where(Tables.ADDRESS.ID.eq(Math.toIntExact(id)))
+                .fetchOne(0, Integer.class) > 0;
     }
 }

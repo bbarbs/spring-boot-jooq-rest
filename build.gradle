@@ -4,7 +4,7 @@ buildscript {
 		myBatisSqlMapVersion = '2.3.0'
 		jooqVersion = '3.10.3'
 		h2Version = '1.4.196'
-		javaxInjectVersion = '1'
+		mapstructVersion = '1.2.0.Final'
 		springSwagger2Version = '2.7.0'
 		springSwaggerUIVersion = '1.0.0'
 	}
@@ -18,9 +18,14 @@ buildscript {
 	}
 }
 
+plugins {
+	id 'net.ltgt.apt' version '0.8'
+}
+
 apply plugin: 'base'
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 group = 'com.jooq'
@@ -46,10 +51,9 @@ dependencies {
 	compile("org.jooq:jooq-meta:${jooqVersion}")
 	compile("org.jooq:jooq-codegen:${jooqVersion}")
 
-	// Inject annotation.
-	compile("javax.inject:javax.inject:${javaxInjectVersion}")
+	compile("org.mapstruct:mapstruct-jdk8:${mapstructVersion}")
+	apt("org.mapstruct:mapstruct-processor:${mapstructVersion}")
 
-	// Swagger dependencies.
 	compile("io.springfox:springfox-swagger2:${springSwagger2Version}")
 	compile("io.springfox.ui:springfox-swagger-ui-rfc6570:${springSwaggerUIVersion}")
 
@@ -78,6 +82,7 @@ task jooqGenerator {
 				pojos true
 				daos true
 				interfaces true
+				springAnnotations true
 			}
 			target() {
 				packageName('com.jooq')
