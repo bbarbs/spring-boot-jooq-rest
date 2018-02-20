@@ -4,20 +4,10 @@ import com.jooq.core.exception.global.PatchOperationNotSupported;
 import com.jooq.core.rest.patch.Patch;
 import com.jooq.core.rest.patch.PatchEnum;
 import com.jooq.feature.exception.CustomerNotFoundException;
-import com.jooq.feature.exception.PassportNotFoundException;
-import com.jooq.feature.model.enums.AddressEnum;
-import com.jooq.feature.repository.AddressRepository;
 import com.jooq.feature.repository.CustomerRepository;
-import com.jooq.feature.repository.PassportRepository;
-import com.jooq.feature.service.AddressService;
 import com.jooq.feature.service.CustomerService;
-import com.jooq.feature.service.PassportService;
-import com.jooq.my_schema.tables.pojos.Address;
 import com.jooq.my_schema.tables.pojos.Customer;
-import com.jooq.my_schema.tables.pojos.Passport;
-import com.jooq.my_schema.tables.records.AddressRecord;
 import com.jooq.my_schema.tables.records.CustomerRecord;
-import com.jooq.my_schema.tables.records.PassportRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,16 +17,10 @@ import java.util.List;
 
 @Service
 @Transactional
-public class CustomerServiceImpl implements CustomerService, AddressService, PassportService {
+public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     CustomerRepository customerRepository;
-
-    @Autowired
-    AddressRepository addressRepository;
-
-    @Autowired
-    PassportRepository passportRepository;
 
     @Override
     public List<Customer> getAllCustomers() {
@@ -99,73 +83,5 @@ public class CustomerServiceImpl implements CustomerService, AddressService, Pas
             throw new CustomerNotFoundException("Customer not found");
         }
         this.customerRepository.delete(customerId);
-    }
-
-    @Override
-    public Address addCustomerAddress(Long customerId, Address address) {
-        CustomerRecord record = this.customerRepository.findOne(customerId);
-        if (record == null) {
-            throw new CustomerNotFoundException("Customer not found");
-        }
-        // Add customer id.
-        address.setFkCustId(record.getId());
-        return this.addressRepository.save(address).into(Address.class);
-    }
-
-    @Override
-    public List<Address> getAddressByCustomerId(Long customerId) {
-        CustomerRecord record = this.customerRepository.findOne(customerId);
-        if (record == null) {
-            throw new CustomerNotFoundException("Customer not found");
-        }
-        List<Address> list = new ArrayList<>();
-        List<AddressRecord> records = this.addressRepository.getAddressByCustomerId(customerId);
-        records.stream()
-                .forEach(addressRecord -> list.add(addressRecord.into(Address.class)));
-        return list;
-    }
-
-    @Override
-    public List<Address> getAddressByCustIdAndAddressType(Long customerId, AddressEnum type) {
-        CustomerRecord record = this.customerRepository.findOne(customerId);
-        if (record == null) {
-            throw new CustomerNotFoundException("Customer not found");
-        }
-        List<Address> list = new ArrayList<>();
-        List<AddressRecord> records = this.addressRepository.getAddressByCustIdAndAddressType(customerId, type);
-        records.stream()
-                .forEach(addressRecord -> list.add(addressRecord.into(Address.class)));
-        return list;
-    }
-
-    @Override
-    public Passport getPassportByCustomerId(Long customerId) {
-        CustomerRecord record = this.customerRepository.findOne(customerId);
-        if (record == null) {
-            throw new CustomerNotFoundException("Customer not found");
-        }
-        return this.passportRepository.getPassportByCustomerId(customerId).into(Passport.class);
-    }
-
-    @Override
-    public Passport addCustomerPassport(Long customerId, Passport passport) {
-        CustomerRecord record = this.customerRepository.findOne(customerId);
-        if (record == null) {
-            throw new CustomerNotFoundException("Customer not found");
-        }
-        // Add customer id.
-        passport.setFkCustId(record.getId());
-        return this.passportRepository.save(passport).into(Passport.class);
-    }
-
-    @Override
-    public Passport updateCustomerPassport(Long passportId, Passport passport) {
-        PassportRecord record = this.passportRepository.findOne(passportId);
-        if (record == null) {
-            throw new PassportNotFoundException("Passport not found");
-        }
-        // Add id.
-        passport.setId(record.getId());
-        return this.passportRepository.update(passport).into(Passport.class);
     }
 }
