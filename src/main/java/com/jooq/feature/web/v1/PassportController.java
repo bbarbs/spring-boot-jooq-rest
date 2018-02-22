@@ -90,6 +90,7 @@ public class PassportController {
         return new ApiResponse<>(
                 HttpStatus.CREATED.value(),
                 HttpStatus.CREATED,
-                Arrays.asList(this.passportMapper.mapToPassportDto(passport)));
+                Arrays.asList(this.passportMapper.mapToPassportDto(passport))
+        );
     }
 }

@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @RestController
 @RequestMapping(value = "/api/v1")
@@ -63,9 +64,11 @@ public class CustomerController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<CustomerDto> addCustomer(@ApiParam(value = "Customer complete details", required = true) @RequestBody CustomerDto dto) {
         Customer customer = this.customerService.addCustomer(this.customerMapper.mapToCustomer(dto));
-        return new ApiResponse<>(HttpStatus.CREATED.value(),
+        return new ApiResponse<>(
+                HttpStatus.CREATED.value(),
                 HttpStatus.CREATED,
-                Arrays.asList(this.customerMapper.mapToCustomerDto(customer)));
+                Arrays.asList(this.customerMapper.mapToCustomerDto(customer))
+        );
     }
 
     /**
@@ -144,16 +147,17 @@ public class CustomerController {
      * @param customerId
      * @return
      */
+    @io.swagger.annotations.ApiResponse(code = 204, message = "No Content")
     @ApiOperation(
             value = "Delete customer by Id"
     )
     @DeleteMapping(
             value = "/customers/{customerId}",
-            produces = APPLICATION_JSON_VALUE
+            produces = {APPLICATION_JSON_VALUE, TEXT_PLAIN_VALUE}
     )
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> deleteCustomerById(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
         this.customerService.removeCustomerById(customerId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
