@@ -42,6 +42,7 @@ public class AddressController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<AddressDto> addCustomerAddress(@ApiParam(value = "Customer Id", required = true) @PathVariable(name = "customerId") Long customerId,
                                                       @ApiParam(value = "Address details", required = true) @RequestBody AddressDto dto) {
         Address address = this.addressService.addCustomerAddress(customerId, this.addressMapper.mapToAddress(dto));

@@ -57,6 +57,7 @@ public class ItemController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<ItemDto> addItem(@ApiParam(value = "Item details", required = true) @RequestBody ItemDto dto) {
         Items item = this.itemService.addItem(this.itemMapper.mapToItems(dto));
         return new ApiResponse<>(

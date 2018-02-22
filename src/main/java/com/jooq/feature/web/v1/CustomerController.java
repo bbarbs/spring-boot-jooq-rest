@@ -8,6 +8,7 @@ import com.jooq.feature.service.CustomerService;
 import com.jooq.my_schema.tables.pojos.Customer;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,7 @@ public class CustomerController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<CustomerDto> addCustomer(@ApiParam(value = "Customer complete details", required = true) @RequestBody CustomerDto dto) {
         Customer customer = this.customerService.addCustomer(this.customerMapper.mapToCustomer(dto));
         return new ApiResponse<>(HttpStatus.CREATED.value(),
@@ -99,6 +101,7 @@ public class CustomerController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<CustomerDto> patchCustomer(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
                                                   @ApiParam(value = "Patch info", required = true) @RequestBody Patch patch) {
         Customer customer = this.customerService.patchCustomer(customerId, patch);
@@ -124,6 +127,7 @@ public class CustomerController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<CustomerDto> updateCustomerById(@ApiParam(value = "Customer Id", required = true) @PathVariable(name = "customerId") Long customerId,
                                                        @ApiParam(value = "Customer details", required = true) @RequestBody CustomerDto dto) {
         Customer customer = this.customerService.updateCustomer(customerId, this.customerMapper.mapToCustomer(dto));
@@ -147,6 +151,7 @@ public class CustomerController {
             value = "/customers/{customerId}",
             produces = APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> deleteCustomerById(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId) {
         this.customerService.removeCustomerById(customerId);
         return new ResponseEntity<>(HttpStatus.OK);

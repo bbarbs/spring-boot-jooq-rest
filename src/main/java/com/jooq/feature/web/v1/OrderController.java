@@ -78,6 +78,7 @@ public class OrderController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<OrderDto> addCustomerOrder(@ApiParam(value = "Customer Id", required = true) @PathVariable("customerId") Long customerId,
                                                   @ApiParam(value = "Order details", required = true) @RequestBody OrderRequest orderRequest) {
         Orders orders = this.orderService.addCustomerOrder(customerId, this.orderMapper.mapToOrders(orderRequest.getOrder()), orderRequest.getItemIds());
@@ -176,6 +177,7 @@ public class OrderController {
             value = "/orders/{orderId}",
             produces = APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> removeOrderById(@ApiParam(value = "Order Id", required = true) @PathVariable("orderId") Long orderId) {
         this.orderService.removeOrderById(orderId);
         return new ResponseEntity<>(HttpStatus.OK);

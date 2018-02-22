@@ -40,6 +40,7 @@ public class PassportController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<PassportDto> addCustomerPassport(@ApiParam(value = "Customer Id", required = true) @PathVariable(name = "customerId") Long customerId,
                                                         @ApiParam(value = "Passport details", required = true) @RequestBody PassportDto dto) {
         Passport passport = this.passportService.addCustomerPassport(customerId, this.passportMapper.mapToPassport(dto));
@@ -82,12 +83,13 @@ public class PassportController {
             value = "/passports/{passportId}",
             produces = APPLICATION_JSON_VALUE
     )
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<PassportDto> updateCustomerPassport(@ApiParam(value = "Passport Id", required = true) @PathVariable("passportId") Long passportId,
                                                            @ApiParam(value = "Passport update", required = true) @RequestBody PassportDto dto) {
         Passport passport = this.passportService.updateCustomerPassport(passportId, this.passportMapper.mapToPassport(dto));
         return new ApiResponse<>(
-                HttpStatus.OK.value(),
-                HttpStatus.OK,
+                HttpStatus.CREATED.value(),
+                HttpStatus.CREATED,
                 Arrays.asList(this.passportMapper.mapToPassportDto(passport)));
     }
 }
